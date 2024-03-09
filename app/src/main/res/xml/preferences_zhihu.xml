@@ -236,27 +236,6 @@
             android:title="隐藏混合卡片"
             android:summary="隐藏「我的」底部混合卡片"/>
     </PreferenceCategory>
-    <PreferenceCategory android:title="左右划" android:key="category_swap_answers">
-        <com.zhihu.android.app.ui.widget.SwitchPreference
-            android:defaultValue="false"
-            android:dependency="switch_mainswitch"
-            android:key="switch_horizontal"
-            android:title="左右划切换回答"
-            android:summary="先凑合用吧 ＞﹏＜"/>
-        <SeekBarPreference
-            android:dependency="switch_horizontal"
-            android:key="seekbar_sensitivity"
-            android:title="灵敏度"
-            android:summary="调节左右划灵敏度"
-            android:defaultValue="5"
-            android:max="9"/>
-        <com.zhihu.android.app.ui.widget.SwitchPreference
-            android:defaultValue="false"
-            android:dependency="switch_mainswitch"
-            android:key="switch_nextanswer"
-            android:title="移除下一个回答按钮"
-            android:summary="多余的按钮"/>
-    </PreferenceCategory>
     <PreferenceCategory android:title="自定义过滤" android:key="category_filter">
         <EditTextPreference
             android:dependency="switch_mainswitch"
@@ -298,6 +277,14 @@
             android:key="edit_js"
             android:title="注入JS脚本"
             android:summary="注入自定义JS脚本"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="左右划" android:key="category_swap_answers">
+        <com.zhihu.android.app.ui.widget.SwitchPreference
+            android:defaultValue="false"
+            android:dependency="switch_mainswitch"
+            android:key="switch_nextanswer"
+            android:title="移除下一个回答按钮"
+            android:summary="多余的按钮"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="临时文件" android:key="category_cleaner">
         <Preference

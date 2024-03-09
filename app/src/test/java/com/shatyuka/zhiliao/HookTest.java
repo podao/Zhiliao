@@ -6,7 +6,6 @@ import com.shatyuka.zhiliao.hooks.Article;
 import com.shatyuka.zhiliao.hooks.CustomFilter;
 import com.shatyuka.zhiliao.hooks.ExternLink;
 import com.shatyuka.zhiliao.hooks.FeedAd;
-import com.shatyuka.zhiliao.hooks.Horizontal;
 import com.shatyuka.zhiliao.hooks.HotBanner;
 import com.shatyuka.zhiliao.hooks.IHook;
 import com.shatyuka.zhiliao.hooks.LaunchAd;
@@ -116,11 +115,6 @@ public class HookTest {
     @Test
     public void liveButtonTest() {
         checkHook(new LiveButton());
-    }
-
-    @Test
-    public void horizontalTest() {
-        checkHook(new Horizontal());
     }
 
     @Test

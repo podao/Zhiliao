@@ -8,7 +8,6 @@ import android.content.res.XmlResourceParser;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,7 +15,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -66,8 +64,6 @@ public class ZhihuPreference implements IHook {
     static Class<?> BasePreferenceFragment;
     static Class<?> PreferenceGroup;
     static Class<?> EditTextPreference;
-    static Class<?> SeekBarPreference;
-    static Class<?> OnSeekBarChangeListener;
     static Class<?> ListPreference;
     static Class<?> TooltipCompat;
 
@@ -87,9 +83,6 @@ public class ZhihuPreference implements IHook {
     static Method setTooltipText;
     static Method startFragment;
 
-    static Field SeekBarPreference_mMin;
-    static Field SeekBarPreference_mSeekBarValueTextView;
-    static Field OnSeekBarChangeListener_seekBarPreferenceInstance;
     static Field ListPreference_mEntries;
     static Field ListPreference_mEntryValues;
 
@@ -127,12 +120,6 @@ public class ZhihuPreference implements IHook {
         BasePreferenceFragment = classLoader.loadClass("com.zhihu.android.app.ui.fragment.BasePreferenceFragment");
         PreferenceGroup = classLoader.loadClass("androidx.preference.PreferenceGroup");
         EditTextPreference = classLoader.loadClass("androidx.preference.EditTextPreference");
-        SeekBarPreference = classLoader.loadClass("androidx.preference.SeekBarPreference");
-        try {
-            OnSeekBarChangeListener = classLoader.loadClass("androidx.preference.SeekBarPreference$1");
-        } catch (ClassNotFoundException e) {
-            OnSeekBarChangeListener = classLoader.loadClass("androidx.preference.SeekBarPreference$a");
-        }
         ListPreference = classLoader.loadClass("androidx.preference.ListPreference");
         TooltipCompat = classLoader.loadClass("androidx.appcompat.widget.TooltipCompat");
 
@@ -189,23 +176,11 @@ public class ZhihuPreference implements IHook {
         startFragment = Helper.getMethodByParameterTypes(BasePreferenceFragment, ZHIntent);
 
         try {
-            SeekBarPreference_mMin = SeekBarPreference.getDeclaredField("b");
-            SeekBarPreference_mMin.setAccessible(true);
-            SeekBarPreference_mSeekBarValueTextView = SeekBarPreference.getDeclaredField("h");
-            SeekBarPreference_mSeekBarValueTextView.setAccessible(true);
-            OnSeekBarChangeListener_seekBarPreferenceInstance = OnSeekBarChangeListener.getDeclaredField("a");
-            OnSeekBarChangeListener_seekBarPreferenceInstance.setAccessible(true);
             ListPreference_mEntries = ListPreference.getDeclaredField("a");
             ListPreference_mEntries.setAccessible(true);
             ListPreference_mEntryValues = ListPreference.getDeclaredField("b");
             ListPreference_mEntryValues.setAccessible(true);
         } catch (NoSuchFieldException e) {
-            SeekBarPreference_mMin = SeekBarPreference.getDeclaredField("Y");
-            SeekBarPreference_mMin.setAccessible(true);
-            SeekBarPreference_mSeekBarValueTextView = SeekBarPreference.getDeclaredField("s0");
-            SeekBarPreference_mSeekBarValueTextView.setAccessible(true);
-            OnSeekBarChangeListener_seekBarPreferenceInstance = OnSeekBarChangeListener.getDeclaredField("j");
-            OnSeekBarChangeListener_seekBarPreferenceInstance.setAccessible(true);
             ListPreference_mEntries = ListPreference.getDeclaredFields()[0];
             ListPreference_mEntries.setAccessible(true);
             ListPreference_mEntryValues = ListPreference.getDeclaredFields()[1];
@@ -255,15 +230,6 @@ public class ZhihuPreference implements IHook {
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 if (((int) param.args[0]) == settings_res_id) {
                     addPreferencesFromResource.invoke(param.thisObject, 7355608);
-                }
-            }
-        });
-
-        XposedHelpers.findAndHookMethod(Preference, getResourceId_MethodName, new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                if ("seekbar_sensitivity".equals(getKey.invoke(param.thisObject))) {
-                    preference_seekbar_res_id = (int) param.getResult();
                 }
             }
         });
@@ -395,7 +361,6 @@ public class ZhihuPreference implements IHook {
                 Object switch_article = findPreference.invoke(thisObject, "switch_article");
                 Object switch_navres = findPreference.invoke(thisObject, "switch_navres");
                 Object switch_nipple = findPreference.invoke(thisObject, "switch_nipple");
-                Object switch_horizontal = findPreference.invoke(thisObject, "switch_horizontal");
                 Object switch_nextanswer = findPreference.invoke(thisObject, "switch_nextanswer");
                 Object preference_clean = findPreference.invoke(thisObject, "preference_clean");
                 Object switch_autoclean = findPreference.invoke(thisObject, "switch_autoclean");
@@ -418,7 +383,6 @@ public class ZhihuPreference implements IHook {
                 setOnPreferenceClickListener.invoke(switch_article, thisObject);
                 setOnPreferenceClickListener.invoke(switch_navres, thisObject);
                 setOnPreferenceClickListener.invoke(switch_nipple, thisObject);
-                setOnPreferenceClickListener.invoke(switch_horizontal, thisObject);
                 setOnPreferenceClickListener.invoke(switch_nextanswer, thisObject);
                 setOnPreferenceClickListener.invoke(preference_clean, thisObject);
                 setOnPreferenceClickListener.invoke(switch_autoclean, thisObject);
@@ -502,8 +466,6 @@ public class ZhihuPreference implements IHook {
                 setIcon.invoke(switch_article, Helper.modRes.getDrawable(R.drawable.ic_article));
                 setIcon.invoke(switch_navres, Helper.modRes.getDrawable(R.drawable.ic_event));
                 setIcon.invoke(switch_nipple, Helper.modRes.getDrawable(R.drawable.ic_do_disturb_on));
-                setIcon.invoke(switch_horizontal, Helper.modRes.getDrawable(R.drawable.ic_swap_horiz));
-                setIcon.invoke(findPreference.invoke(thisObject, "seekbar_sensitivity"), Helper.modRes.getDrawable(R.drawable.ic_bolt));
                 setIcon.invoke(switch_nextanswer, Helper.modRes.getDrawable(R.drawable.ic_circle_down));
                 setIcon.invoke(findPreference.invoke(thisObject, "edit_title"), Helper.regex_title != null ? Helper.modRes.getDrawable(R.drawable.ic_check) : Helper.modRes.getDrawable(R.drawable.ic_close));
                 setIcon.invoke(findPreference.invoke(thisObject, "edit_author"), Helper.regex_author != null ? Helper.modRes.getDrawable(R.drawable.ic_check) : Helper.modRes.getDrawable(R.drawable.ic_close));
@@ -613,7 +575,6 @@ public class ZhihuPreference implements IHook {
                     case "switch_friendnav":
                     case "switch_panelnav":
                     case "switch_article":
-                    case "switch_horizontal":
                     case "switch_nextanswer":
                     case "switch_nipple":
                     case "switch_autoclean":
@@ -655,29 +616,6 @@ public class ZhihuPreference implements IHook {
                         setIcon.invoke(thisObject, Helper.regex_content != null ? Helper.modRes.getDrawable(R.drawable.ic_check) : Helper.modRes.getDrawable(R.drawable.ic_close));
                         break;
                 }
-            }
-        });
-        XposedHelpers.findAndHookConstructor(SeekBarPreference, Context.class, AttributeSet.class, int.class, int.class, new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                SeekBarPreference_mMin.setInt(param.thisObject, 1);
-            }
-        });
-        XposedBridge.hookMethod(Helper.getMethodByParameterTypes(SeekBarPreference, int.class, boolean.class), new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                Object thisObject = param.thisObject;
-                if ("seekbar_sensitivity".equals(getKey.invoke(thisObject))) {
-                    Helper.sensitivity = 10 - (int) param.args[0];
-                }
-            }
-        });
-        XposedHelpers.findAndHookMethod(OnSeekBarChangeListener, "onProgressChanged", SeekBar.class, int.class, boolean.class, new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                Object thisObject = OnSeekBarChangeListener_seekBarPreferenceInstance.get(param.thisObject);
-                TextView textView = (TextView) SeekBarPreference_mSeekBarValueTextView.get(thisObject);
-                textView.setText(String.valueOf(SeekBarPreference_mMin.getInt(thisObject) + (int) param.args[1]));
             }
         });
 

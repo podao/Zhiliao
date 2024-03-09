@@ -80,7 +80,6 @@ public class Helper {
             regex_content = compileRegex(prefs.getString("edit_content", ""));
 
             scale = context.getResources().getDisplayMetrics().density;
-            sensitivity = 10 - prefs.getInt("seekbar_sensitivity", 5);
 
             return true;
         } catch (Exception e) {
