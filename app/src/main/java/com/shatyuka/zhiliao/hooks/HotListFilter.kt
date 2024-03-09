@@ -1,248 +1,224 @@
-package com.shatyuka.zhiliao.hooks;
+package com.shatyuka.zhiliao.hooks
 
-import com.shatyuka.zhiliao.Helper;
-import com.shatyuka.zhiliao.Helper.JsonNodeOp;
+import com.shatyuka.zhiliao.Helper
+import com.shatyuka.zhiliao.Helper.JsonNodeOp
+import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XposedBridge
+import java.lang.reflect.Field
+import java.lang.reflect.InvocationTargetException
+import java.lang.reflect.Method
+import java.util.Arrays
+import java.util.Optional
+import java.util.regex.Pattern
+import java.util.stream.Collectors
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+class HotListFilter : IHook {
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
+    private lateinit var feedsHotListFragment2: Class<*>
+    private lateinit var rankFeedList: Class<*>
+    private lateinit var ZHObjectList: Class<*>
+    private lateinit var ZHObjectListDataField: Field
+    private lateinit var rankFeedModule: Class<*>
+    private lateinit var hotLoadMore: Class<*>
+    private lateinit var rankFeed: Class<*>
+    private lateinit var rankFeedContent: Class<*>
+    private lateinit var linkArea: Class<*>
+    private lateinit var rankFeed_targetField: Field
+    private lateinit var rankFeedContent_linkAreaField: Field
+    private lateinit var linkArea_urlField: Field
+    private lateinit var response: Class<*>
+    private lateinit var response_bodyField: Field
+    private lateinit var retAndArgTypeQqResponseMethodList: List<Method>
+    private lateinit var rankFeedList_displayNumField: Field
+    private lateinit var templateCardModel: Class<*>
+    private lateinit var templateCardModel_dataField: Field
+    private lateinit var basePagingFragment: Class<*>
 
-public class HotListFilter implements IHook {
-
-    static Class<?> feedsHotListFragment2;
-
-    static Class<?> rankFeedList;
-
-    static Class<?> ZHObjectList;
-
-    static Field ZHObjectListDataField;
-
-    static Class<?> rankFeedModule;
-
-    static Class<?> hotLoadMore;
-
-    static Class<?> rankFeed;
-
-    static Class<?> rankFeedContent;
-
-    static Class<?> linkArea;
-
-    static Field rankFeed_targetField;
-
-    static Field rankFeedContent_linkAreaField;
-
-    static Field linkArea_urlField;
-
-    static Class<?> response;
-
-    static Field response_bodyField;
-
-    static List<Method> retAndArgTypeQqResponseMethodList;
-
-    static Field rankFeedList_displayNumField;
-
-    static Class<?> templateCardModel;
-
-    static Field templateCardModel_dataField;
-
-    static Class<?> basePagingFragment;
-
-    static final Pattern QUESTION_URL_PATTERN = Pattern.compile("zhihu\\.com/question/");
-
-    @Override
-    public String getName() {
-        return "热榜和底部推荐过滤";
-    }
-
-    @Override
-    public void init(ClassLoader classLoader) throws Throwable {
-        basePagingFragment = classLoader.loadClass("com.zhihu.android.app.ui.fragment.paging.BasePagingFragment");
-        feedsHotListFragment2 = classLoader.loadClass("com.zhihu.android.app.feed.ui.fragment.FeedsHotListFragment2");
-
-        rankFeedList = classLoader.loadClass("com.zhihu.android.api.model.RankFeedList");
-        ZHObjectList = classLoader.loadClass("com.zhihu.android.api.model.ZHObjectList");
-
-        ZHObjectListDataField = ZHObjectList.getDeclaredField("data");
-        ZHObjectListDataField.setAccessible(true);
-
-        rankFeedModule = classLoader.loadClass("com.zhihu.android.api.model.RankFeedModule");
-
-        hotLoadMore = classLoader.loadClass("com.zhihu.android.app.feed.ui.holder.hot.HotLoadMore");
-
-        rankFeed = classLoader.loadClass("com.zhihu.android.api.model.RankFeed");
-        rankFeedContent = classLoader.loadClass("com.zhihu.android.api.model.RankFeedContent");
-
-        linkArea = classLoader.loadClass("com.zhihu.android.api.model.RankFeedContent$LinkArea");
-
-
-        rankFeed_targetField = rankFeed.getDeclaredField("target");
-        rankFeed_targetField.setAccessible(true);
-
-        rankFeedContent_linkAreaField = rankFeedContent.getDeclaredField("linkArea");
-        rankFeedContent_linkAreaField.setAccessible(true);
-
-        linkArea_urlField = linkArea.getDeclaredField("url");
-        linkArea_urlField.setAccessible(true);
-
-        response = classLoader.loadClass("retrofit2.Response");
-
-        response_bodyField = Arrays.stream(response.getDeclaredFields())
-                .filter(field -> field.getType() == Object.class).findFirst().get();
-        response_bodyField.setAccessible(true);
-
-        retAndArgTypeQqResponseMethodList = Arrays.stream(feedsHotListFragment2.getDeclaredMethods())
-                .filter(method -> method.getReturnType() == response)
-                .filter(method -> method.getParameterCount() == 1)
-                .filter(method -> method.getParameterTypes()[0] == response).collect(Collectors.toList());
-
-        rankFeedList_displayNumField = rankFeedList.getDeclaredField("display_num");
-        rankFeedList_displayNumField.setAccessible(true);
-
-        templateCardModel = classLoader.loadClass("com.zhihu.android.bean.TemplateCardModel");
-        templateCardModel_dataField = templateCardModel.getField("data");
-        templateCardModel_dataField.setAccessible(true);
-
+    private companion object {
+        val QUESTION_URL_PATTERN = Pattern.compile("zhihu\\.com/question/")
     }
 
 
-    @Override
-    public void hook() throws Throwable {
+    override fun getName(): String {
+        return "热榜和底部推荐过滤"
+    }
 
-        XposedBridge.hookAllMethods(feedsHotListFragment2, "postRefreshSucceed", new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                if (!Helper.prefs.getBoolean("switch_mainswitch", false)) {
-                    return;
-                }
+    @Throws(Throwable::class)
+    override fun init(classLoader: ClassLoader) {
+        basePagingFragment =
+            classLoader.loadClass("com.zhihu.android.app.ui.fragment.paging.BasePagingFragment")
+        feedsHotListFragment2 =
+            classLoader.loadClass("com.zhihu.android.app.feed.ui.fragment.FeedsHotListFragment2")
+        rankFeedList = classLoader.loadClass("com.zhihu.android.api.model.RankFeedList")
+        ZHObjectList = classLoader.loadClass("com.zhihu.android.api.model.ZHObjectList")
+        ZHObjectListDataField = ZHObjectList.getDeclaredField("data")
+        ZHObjectListDataField.isAccessible = true
 
-                filterRankFeed(param.args[0]);
+        rankFeedModule = classLoader.loadClass("com.zhihu.android.api.model.RankFeedModule")
+        hotLoadMore = classLoader.loadClass("com.zhihu.android.app.feed.ui.holder.hot.HotLoadMore")
+        rankFeed = classLoader.loadClass("com.zhihu.android.api.model.RankFeed")
+        rankFeedContent = classLoader.loadClass("com.zhihu.android.api.model.RankFeedContent")
+        linkArea = classLoader.loadClass("com.zhihu.android.api.model.RankFeedContent\$LinkArea")
 
-            }
+        rankFeed_targetField = rankFeed.getDeclaredField("target")
+        rankFeed_targetField.isAccessible = true
 
-        });
+        rankFeedContent_linkAreaField = rankFeedContent.getDeclaredField("linkArea")
+        rankFeedContent_linkAreaField.isAccessible = true
 
-        XposedBridge.hookAllMethods(basePagingFragment, "postLoadMoreSucceed", new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                if (!Helper.prefs.getBoolean("switch_mainswitch", false)) {
-                    return;
-                }
+        linkArea_urlField = linkArea.getDeclaredField("url")
+        linkArea_urlField.isAccessible = true
 
-                if (param.thisObject.getClass() == feedsHotListFragment2) {
-                    filterRankFeed(param.args[0]);
-                }
+        response = classLoader.loadClass("retrofit2.Response")
+        response_bodyField = Arrays.stream(response.declaredFields)
+            .filter { field: Field -> field.type == Any::class.java }.findFirst().get()
+        response_bodyField.isAccessible = true
 
-            }
+        retAndArgTypeQqResponseMethodList =
+            Arrays.stream(feedsHotListFragment2.getDeclaredMethods())
+                .filter { method: Method -> method.returnType == response }
+                .filter { method: Method -> method.parameterCount == 1 }
+                .filter { method: Method -> method.getParameterTypes()[0] == response }
+                .collect(Collectors.toList())
+        rankFeedList_displayNumField = rankFeedList.getDeclaredField("display_num")
+        rankFeedList_displayNumField.isAccessible = true
 
-        });
+        templateCardModel = classLoader.loadClass("com.zhihu.android.bean.TemplateCardModel")
+        templateCardModel_dataField = templateCardModel.getField("data")
+        templateCardModel_dataField.isAccessible = true
+    }
 
-        for (Method processRankList : retAndArgTypeQqResponseMethodList) {
-            XposedBridge.hookMethod(processRankList, new XC_MethodHook() {
-                @Override
-                protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+    @Throws(Throwable::class)
+    override fun hook() {
+        XposedBridge.hookAllMethods(
+            feedsHotListFragment2,
+            "postRefreshSucceed",
+            object : XC_MethodHook() {
+                @Throws(Throwable::class)
+                override fun beforeHookedMethod(param: MethodHookParam) {
                     if (!Helper.prefs.getBoolean("switch_mainswitch", false)) {
-                        return;
+                        return
                     }
-
-                    Object rankFeedList = response_bodyField.get(param.args[0]);
-                    if (rankFeedList == null) {
-                        return;
+                    filterRankFeed(param.args[0])
+                }
+            })
+        XposedBridge.hookAllMethods(
+            basePagingFragment,
+            "postLoadMoreSucceed",
+            object : XC_MethodHook() {
+                @Throws(Throwable::class)
+                override fun beforeHookedMethod(param: MethodHookParam) {
+                    if (!Helper.prefs.getBoolean("switch_mainswitch", false)) {
+                        return
                     }
-                    List<?> rankFeedListData = (List<?>) ZHObjectListDataField.get(rankFeedList);
-                    if (rankFeedListData == null || rankFeedListData.isEmpty()) {
-                        return;
+                    if (param.thisObject.javaClass == feedsHotListFragment2) {
+                        filterRankFeed(param.args[0])
+                    }
+                }
+            })
+        for (processRankList in retAndArgTypeQqResponseMethodList) {
+            XposedBridge.hookMethod(processRankList, object : XC_MethodHook() {
+                @Throws(Throwable::class)
+                override fun beforeHookedMethod(param: MethodHookParam) {
+                    if (!Helper.prefs.getBoolean("switch_mainswitch", false)) {
+                        return
+                    }
+                    val rankFeedList = response_bodyField[param.args[0]] ?: return
+                    val rankFeedListData = ZHObjectListDataField[rankFeedList] as List<*>
+                    if (rankFeedListData.isEmpty()) {
+                        return
                     }
 
                     // 热榜全部展示, 不折叠
-                    rankFeedList_displayNumField.set(rankFeedList, rankFeedListData.size());
+                    rankFeedList_displayNumField[rankFeedList] = rankFeedListData.size
                 }
-            });
+            })
         }
-
-
     }
 
-    private void filterRankFeed(Object rankFeedListInstance) throws IllegalAccessException {
+    @Throws(IllegalAccessException::class)
+    private fun filterRankFeed(rankFeedListInstance: Any?) {
         if (rankFeedListInstance == null) {
-            return;
+            return
         }
-        List<?> rankListData = (List<?>) ZHObjectListDataField.get(rankFeedListInstance);
-        if (rankListData == null || rankListData.isEmpty()) {
-            return;
+        val rankListData = ZHObjectListDataField[rankFeedListInstance] as MutableList<*>
+        if (rankListData.isEmpty()) {
+            return
         }
-
-        rankListData.removeIf(feed -> {
+        rankListData.removeIf { feed ->
             try {
-                return preFilter(feed) || isAd(feed) || shouldFilterEveryoneSeeRankFeed(feed);
-            } catch (Exception e) {
-                XposedBridge.log(e);
-                return false;
+                return@removeIf preFilter(feed)
+                        || isAd(feed as Any)
+                        || shouldFilterEveryoneSeeRankFeed(feed)
+            } catch (e: Exception) {
+                XposedBridge.log("[Zhiliao] $e")
+                XposedBridge.log(e)
+                return@removeIf false
             }
-        });
-
-    }
-
-    private boolean preFilter(Object rankFeedInstance) {
-        return rankFeedInstance == null || rankFeedInstance.getClass() == rankFeedModule;
-    }
-
-    @SuppressWarnings("all")
-    private boolean shouldFilterEveryoneSeeRankFeed(Object rankFeedInstance) throws IllegalAccessException, InvocationTargetException {
-        if (rankFeedInstance == null || rankFeedInstance.getClass() != templateCardModel) {
-            return false;
         }
+    }
 
-        Object data = templateCardModel_dataField.get(rankFeedInstance);
-        Object target = JsonNodeOp.JsonNode_get.invoke(data, "target");
+    private fun preFilter(rankFeedInstance: Any?): Boolean {
+        return rankFeedInstance == null || rankFeedInstance.javaClass == rankFeedModule
+    }
 
+    @Throws(IllegalAccessException::class, InvocationTargetException::class)
+    private fun shouldFilterEveryoneSeeRankFeed(rankFeedInstance: Any?): Boolean {
+        if (rankFeedInstance == null || rankFeedInstance.javaClass != templateCardModel) {
+            return false
+        }
+        val data = templateCardModel_dataField[rankFeedInstance]
+        val target = JsonNodeOp.JsonNode_get.invoke(data, "target")
         if (Helper.regex_title != null) {
-            String title = JsonNodeOp.JsonNode_get.invoke(JsonNodeOp.JsonNode_get.invoke(target, "title_area"), "text").toString();
-            if (Helper.regex_title.matcher(title).find()) {
-                return true;
+            val title = JsonNodeOp.JsonNode_get.invoke(
+                JsonNodeOp.JsonNode_get.invoke(target, "title_area"),
+                "text"
+            )?.toString()
+            if (Helper.regex_title.matcher(title as CharSequence).find()) {
+                return true
             }
         }
-
         if (Helper.regex_author != null) {
-            String author = JsonNodeOp.JsonNode_get.invoke(JsonNodeOp.JsonNode_get.invoke(target, "author_area"), "name").toString();
-            if (Helper.regex_author.matcher(author).find()) {
-                return true;
+            val author = JsonNodeOp.JsonNode_get.invoke(
+                JsonNodeOp.JsonNode_get.invoke(
+                    target,
+                    "author_area"
+                ), "name"
+            )?.toString()
+            if (Helper.regex_author.matcher(author as CharSequence).find()) {
+                return true
             }
         }
-
         if (Helper.regex_content != null) {
             // not full content
-            String excerpt = (String) JsonNodeOp.JsonNode_get.invoke(JsonNodeOp.JsonNode_get.invoke(target, "excerpt_area"), "text").toString();
-            if (Helper.regex_content.matcher(excerpt).find()) {
-                return true;
+            if (Helper.regex_content.matcher(
+                    JsonNodeOp.JsonNode_get.invoke(
+                        JsonNodeOp.JsonNode_get.invoke(
+                            target,
+                            "excerpt_area"
+                        ), "text"
+                    )?.toString() ?: ""
+                ).find()
+            ) {
+                return true
             }
         }
-
-        return false;
+        return false
     }
 
-    private boolean isAd(Object rankFeedInstance) {
-        if (rankFeedInstance.getClass() == rankFeed) {
+    private fun isAd(rankFeedInstance: Any): Boolean {
+        if (rankFeedInstance.javaClass == rankFeed) {
             try {
-                Object target = rankFeed_targetField.get(rankFeedInstance);
-                Object linkAreaInstance = rankFeedContent_linkAreaField.get(target);
-
-                String url = Optional.ofNullable((String) linkArea_urlField.get(linkAreaInstance)).orElse("");
-
-                return !QUESTION_URL_PATTERN.matcher(url).find();
-
-            } catch (Exception e) {
-                XposedBridge.log(e);
+                val target = rankFeed_targetField[rankFeedInstance]
+                val linkAreaInstance = rankFeedContent_linkAreaField[target]
+                val url =
+                    Optional.ofNullable(linkArea_urlField[linkAreaInstance] as String).orElse("")
+                return !QUESTION_URL_PATTERN.matcher(url).find()
+            } catch (e: Exception) {
+                XposedBridge.log("[Zhiliao] $e")
+                XposedBridge.log(e)
             }
         }
-
-        return false;
+        return false
     }
 }
