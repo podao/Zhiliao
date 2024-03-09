@@ -1,32 +1,35 @@
-package com.shatyuka.zhiliao.hooks;
+package com.shatyuka.zhiliao.hooks
 
-import com.shatyuka.zhiliao.Helper;
+import com.shatyuka.zhiliao.Helper
+import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XposedBridge
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
+class FeedTopHotBanner : IHook {
 
-public class FeedTopHotBanner implements IHook {
-    static Class<?> feedTopHotAutoJacksonDeserializer;
+    private lateinit var feedTopHotAutoJacksonDeserializer: Class<*>
 
-    @Override
-    public String getName() {
-        return "隐藏推荐页置顶热门";
+    override fun getName(): String {
+        return "隐藏推荐页置顶热门"
     }
 
-    @Override
-    public void init(ClassLoader classLoader) throws Throwable {
-        feedTopHotAutoJacksonDeserializer = classLoader.loadClass("com.zhihu.android.api.model.FeedTopHotAutoJacksonDeserializer");
+    @Throws(Throwable::class)
+    override fun init(classLoader: ClassLoader) {
+        feedTopHotAutoJacksonDeserializer =
+            classLoader.loadClass("com.zhihu.android.api.model.FeedTopHotAutoJacksonDeserializer")
     }
 
-    @Override
-    public void hook() throws Throwable {
-        XposedBridge.hookAllMethods(feedTopHotAutoJacksonDeserializer, "deserialize", new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) {
-                if (Helper.prefs.getBoolean("switch_mainswitch", false) && Helper.prefs.getBoolean("switch_feedtophot", false)) {
-                    param.setResult(null);
+    override fun hook() {
+        XposedBridge.hookAllMethods(
+            feedTopHotAutoJacksonDeserializer,
+            "deserialize",
+            object : XC_MethodHook() {
+                override fun beforeHookedMethod(param: MethodHookParam) {
+                    if (Helper.prefs.getBoolean("switch_mainswitch", false)
+                        && Helper.prefs.getBoolean("switch_feedtophot", false)
+                    ) {
+                        param.setResult(null)
+                    }
                 }
-            }
-        });
+            })
     }
 }
