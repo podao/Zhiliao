@@ -1,88 +1,67 @@
-package com.shatyuka.zhiliao.hooks;
+package com.shatyuka.zhiliao.hooks
 
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
+import com.shatyuka.zhiliao.Helper
+import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XposedBridge
+import java.lang.reflect.Field
+import java.util.Arrays
 
-import com.shatyuka.zhiliao.Helper;
+class FollowButtonFeatureUI : IHook {
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
+    private lateinit var followWithAvatarView: Class<*>
+    private lateinit var bottomReactionViewImpl: Class<*>
+    private lateinit var followButtonViewImpl: Class<*>
+    private lateinit var followPeopleButton: Class<*>
+    private lateinit var followWithAvatarViewFromImplField: Field
+    private lateinit var followPeopleButtonField: Field
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-
-public class FollowButtonFeatureUI implements IHook {
-
-    static Class<?> followWithAvatarView;
-
-    static Class<?> bottomReactionViewImpl;
-
-    static Class<?> followButtonViewImpl;
-
-    static Class<?> followPeopleButton;
-
-    static Field followWithAvatarViewFromImplField;
-
-    static Field followPeopleButtonField;
-
-    @Override
-    public String getName() {
-        return "去关注按钮(FeatureUI)";
+    override fun getName(): String {
+        return "去关注按钮(FeatureUI)"
     }
 
-    @Override
-    public void init(ClassLoader classLoader) throws Throwable {
-
-        bottomReactionViewImpl = classLoader.loadClass("com.zhihu.android.feature.short_container_feature.ui.widget.impl.BottomReactionViewImpl");
-
-        followWithAvatarView = classLoader.loadClass("com.zhihu.android.unify_interactive.view.follow.FollowWithAvatarView");
-        followWithAvatarViewFromImplField = findFieldByType(bottomReactionViewImpl, followWithAvatarView);
-
-        followButtonViewImpl = classLoader.loadClass("com.zhihu.android.feature.short_container_feature.ui.widget.impl.FollowButtonViewImpl");
-        followPeopleButton = classLoader.loadClass("com.zhihu.android.unify_interactive.view.follow.FollowPeopleButton");
-
-        followPeopleButtonField = findFieldByType(followButtonViewImpl, followPeopleButton);
+    @Throws(Throwable::class)
+    override fun init(classLoader: ClassLoader) {
+        bottomReactionViewImpl =
+            classLoader.loadClass("com.zhihu.android.feature.short_container_feature.ui.widget.impl.BottomReactionViewImpl")
+        followWithAvatarView =
+            classLoader.loadClass("com.zhihu.android.unify_interactive.view.follow.FollowWithAvatarView")
+        followWithAvatarViewFromImplField =
+            Helper.findFieldByType(bottomReactionViewImpl, followWithAvatarView)
+        followButtonViewImpl =
+            classLoader.loadClass("com.zhihu.android.feature.short_container_feature.ui.widget.impl.FollowButtonViewImpl")
+        followPeopleButton =
+            classLoader.loadClass("com.zhihu.android.unify_interactive.view.follow.FollowPeopleButton")
+        followPeopleButtonField = Helper.findFieldByType(followButtonViewImpl, followPeopleButton)
     }
 
-    @Override
-    public void hook() throws Throwable {
-
-        XposedBridge.hookAllMethods(bottomReactionViewImpl, "setData", new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws IllegalAccessException {
-                if (Helper.prefs.getBoolean("switch_mainswitch", false) && Helper.prefs.getBoolean("switch_subscribe", false)) {
-                    FrameLayout followWithAvatarViewInstance = (FrameLayout) followWithAvatarViewFromImplField.get(param.thisObject);
-
-                    if (followWithAvatarViewInstance != null) {
-                        followWithAvatarViewInstance.setVisibility(View.GONE);
-                    }
-
+    @Throws(Throwable::class)
+    override fun hook() {
+        XposedBridge.hookAllMethods(bottomReactionViewImpl, "setData", object : XC_MethodHook() {
+            @Throws(IllegalAccessException::class)
+            override fun afterHookedMethod(param: MethodHookParam) {
+                if (Helper.prefs.getBoolean("switch_mainswitch", false)
+                    && Helper.prefs.getBoolean("switch_subscribe", false)
+                ) {
+                    val followWithAvatarViewInstance =
+                        followWithAvatarViewFromImplField.get(param.thisObject) as FrameLayout
+                    followWithAvatarViewInstance.visibility = View.GONE
                 }
             }
-        });
-
-        XposedBridge.hookAllMethods(followButtonViewImpl, "setData", new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws IllegalAccessException {
-                if (Helper.prefs.getBoolean("switch_mainswitch", false) && Helper.prefs.getBoolean("switch_subscribe", false)) {
-                    ViewGroup followPeopleButtonInstance = (ViewGroup) followPeopleButtonField.get(param.thisObject);
-
-                    if (followPeopleButtonInstance != null) {
-                        followPeopleButtonInstance.setVisibility(View.GONE);
-                    }
-
+        })
+        XposedBridge.hookAllMethods(followButtonViewImpl, "setData", object : XC_MethodHook() {
+            @Throws(IllegalAccessException::class)
+            override fun afterHookedMethod(param: MethodHookParam) {
+                if (Helper.prefs.getBoolean("switch_mainswitch", false)
+                    && Helper.prefs.getBoolean("switch_subscribe", false)
+                ) {
+                    val followPeopleButtonInstance =
+                        followPeopleButtonField.get(param.thisObject) as ViewGroup
+                    followPeopleButtonInstance.visibility = View.GONE
                 }
             }
-        });
-
-    }
-
-    private Field findFieldByType(Class<?> clazz, Class<?> type) {
-        Field field = Arrays.stream(clazz.getDeclaredFields())
-                .filter(f -> f.getType() == type).findFirst().get();
-
-        field.setAccessible(true);
-        return field;
+        })
     }
 }
