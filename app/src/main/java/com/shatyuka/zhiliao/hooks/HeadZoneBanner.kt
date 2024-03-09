@@ -1,40 +1,42 @@
-package com.shatyuka.zhiliao.hooks;
+package com.shatyuka.zhiliao.hooks
 
-import com.shatyuka.zhiliao.Helper;
+import com.shatyuka.zhiliao.Helper
+import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XposedBridge
+import java.lang.reflect.Field
 
-import java.lang.reflect.Field;
+class HeadZoneBanner : IHook {
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
+    private lateinit var rankFeedList: Class<*>
+    private lateinit var feedsHotListFragment2: Class<*>
+    private lateinit var headZone: Field
 
-public class HeadZoneBanner implements IHook {
-    static Class<?> rankFeedList;
-    static Class<?> feedsHotListFragment2;
-
-    static Field head_zone;
-
-    @Override
-    public String getName() {
-        return "隐藏热榜顶部置顶";
+    override fun getName(): String {
+        return "隐藏热榜顶部置顶"
     }
 
-    @Override
-    public void init(ClassLoader classLoader) throws Throwable {
-        rankFeedList = classLoader.loadClass("com.zhihu.android.api.model.RankFeedList");
-        head_zone = rankFeedList.getDeclaredField("head_zone");
-        head_zone.setAccessible(true);
-        feedsHotListFragment2 = classLoader.loadClass("com.zhihu.android.app.feed.ui.fragment.FeedsHotListFragment2");
+    @Throws(Throwable::class)
+    override fun init(classLoader: ClassLoader) {
+        rankFeedList = classLoader.loadClass("com.zhihu.android.api.model.RankFeedList")
+        headZone = rankFeedList.getDeclaredField("head_zone")
+        headZone.isAccessible = true
+
+        feedsHotListFragment2 =
+            classLoader.loadClass("com.zhihu.android.app.feed.ui.fragment.FeedsHotListFragment2")
     }
 
-    @Override
-    public void hook() throws Throwable {
-        XposedBridge.hookAllMethods(feedsHotListFragment2, "postRefreshSucceed", new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws IllegalAccessException {
-                if (Helper.prefs.getBoolean("switch_mainswitch", false)) {
-                    head_zone.set(param.args[0], null);
+    @Throws(Throwable::class)
+    override fun hook() {
+        XposedBridge.hookAllMethods(
+            feedsHotListFragment2,
+            "postRefreshSucceed",
+            object : XC_MethodHook() {
+                @Throws(IllegalAccessException::class)
+                override fun beforeHookedMethod(param: MethodHookParam) {
+                    if (Helper.prefs.getBoolean("switch_mainswitch", false)) {
+                        headZone.set(param.args[0], null)
+                    }
                 }
-            }
-        });
+            })
     }
 }
