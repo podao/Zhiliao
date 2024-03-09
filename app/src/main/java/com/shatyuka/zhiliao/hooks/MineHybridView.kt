@@ -1,47 +1,46 @@
-package com.shatyuka.zhiliao.hooks;
+package com.shatyuka.zhiliao.hooks
 
-import android.view.View;
+import android.view.View
+import com.shatyuka.zhiliao.Helper
+import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XposedBridge
+import java.lang.reflect.Field
+import java.util.Arrays
 
-import com.shatyuka.zhiliao.Helper;
+class MineHybridView : IHook {
 
-import java.lang.reflect.Field;
-import java.util.Arrays;
+    private lateinit var mineTabFragment: Class<*>
+    private lateinit var mineHybridView: Class<*>
+    private lateinit var mineHybridViewField: Field
 
-import de.robv.android.xposed.XC_MethodHook;
-import de.robv.android.xposed.XposedBridge;
-
-public class MineHybridView implements IHook {
-    static Class<?> mineTabFragment;
-    static Class<?> mineHybridView;
-
-    static Field mineHybridViewField;
-
-    @Override
-    public String getName() {
-        return "隐藏「我的」底部混合卡片";
+    override fun getName(): String {
+        return "隐藏「我的」底部混合卡片"
     }
 
-    @Override
-    public void init(ClassLoader classLoader) throws Throwable {
-        mineTabFragment = classLoader.loadClass("com.zhihu.android.app.ui.fragment.more.mine.MineTabFragment");
-        mineHybridView = classLoader.loadClass("com.zhihu.android.app.ui.fragment.more.mine.widget.MineHybridView");
-
-        mineHybridViewField = Arrays.stream(mineTabFragment.getDeclaredFields()).filter(field -> field.getType() == mineHybridView).findFirst().get();
-        mineHybridViewField.setAccessible(true);
+    @Throws(Throwable::class)
+    override fun init(classLoader: ClassLoader) {
+        mineTabFragment =
+            classLoader.loadClass("com.zhihu.android.app.ui.fragment.more.mine.MineTabFragment")
+        mineHybridView =
+            classLoader.loadClass("com.zhihu.android.app.ui.fragment.more.mine.widget.MineHybridView")
+        mineHybridViewField = Arrays.stream(mineTabFragment.declaredFields)
+            .filter { field: Field -> field.type == mineHybridView }
+            .findFirst().get()
+        mineHybridViewField.isAccessible = true
     }
 
-    @Override
-    public void hook() throws Throwable {
-        XposedBridge.hookAllMethods(mineTabFragment, "onCreateView", new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                if (Helper.prefs.getBoolean("switch_mainswitch", false) && Helper.prefs.getBoolean("switch_minehybrid", false)) {
-                    View mineHybridView = (View) mineHybridViewField.get(param.thisObject);
-                    if (mineHybridView != null) {
-                        mineHybridView.setVisibility(View.GONE);
-                    }
+    @Throws(Throwable::class)
+    override fun hook() {
+        XposedBridge.hookAllMethods(mineTabFragment, "onCreateView", object : XC_MethodHook() {
+            @Throws(Throwable::class)
+            override fun afterHookedMethod(param: MethodHookParam) {
+                if (Helper.prefs.getBoolean("switch_mainswitch", false)
+                    && Helper.prefs.getBoolean("switch_minehybrid", false)
+                ) {
+                    val mineHybridView = mineHybridViewField.get(param.thisObject) as View
+                    mineHybridView.visibility = View.GONE
                 }
             }
-        });
+        })
     }
 }
