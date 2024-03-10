@@ -120,8 +120,7 @@ class CardViewFeatureShortFilter : IHook {
             try {
                 return isAd(shortContentJsonNode) || hasMoreType(shortContentJsonNode)
             } catch (e: Exception) {
-                XposedBridge.log("[Zhiliao]")
-                XposedBridge.log(e)
+                Helper.logD(this::class.simpleName,e)
             }
             return false
         }
@@ -161,14 +160,12 @@ class CardViewFeatureShortFilter : IHook {
                     JsonNodeOp.ObjectNode_put.invoke(searchWordJsonNode, "queries", null)
                 }
             } catch (e: Exception) {
-                XposedBridge.log("[Zhiliao]")
-                XposedBridge.log(e)
+                Helper.logD(this::class.simpleName,e)
             }
             try {
                 JsonNodeOp.ObjectNode_put.invoke(shortContentJsonNode, "relationship_tips", null)
             } catch (e: Exception) {
-                XposedBridge.log("[Zhiliao]")
-                XposedBridge.log(e)
+                Helper.logD(this::class.simpleName,e)
             }
             if (Helper.prefs.getBoolean("switch_related", false)) {
                 try {
@@ -182,8 +179,7 @@ class CardViewFeatureShortFilter : IHook {
                         }
                     }
                 } catch (e: Exception) {
-                    XposedBridge.log("[Zhiliao]")
-                    XposedBridge.log(e)
+                    Helper.logD(this::class.simpleName,e)
                 }
             }
         }

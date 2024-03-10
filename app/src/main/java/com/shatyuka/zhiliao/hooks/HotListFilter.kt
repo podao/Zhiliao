@@ -151,8 +151,7 @@ class HotListFilter : IHook {
                         || isAd(feed as Any)
                         || shouldFilterEveryoneSeeRankFeed(feed)
             } catch (e: Exception) {
-                XposedBridge.log("[Zhiliao] $e")
-                XposedBridge.log(e)
+                Helper.logD(this::class.simpleName,e)
                 return@removeIf false
             }
         }
@@ -215,8 +214,7 @@ class HotListFilter : IHook {
                     Optional.ofNullable(linkArea_urlField[linkAreaInstance] as String).orElse("")
                 return !QUESTION_URL_PATTERN.matcher(url).find()
             } catch (e: Exception) {
-                XposedBridge.log("[Zhiliao] $e")
-                XposedBridge.log(e)
+                Helper.logD(this::class.simpleName,e)
             }
         }
         return false

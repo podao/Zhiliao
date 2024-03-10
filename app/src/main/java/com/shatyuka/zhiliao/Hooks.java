@@ -16,8 +16,8 @@ import com.shatyuka.zhiliao.hooks.ExternLink;
 import com.shatyuka.zhiliao.hooks.FeedAd;
 import com.shatyuka.zhiliao.hooks.FeedTopHotBanner;
 import com.shatyuka.zhiliao.hooks.FollowButton;
-import com.shatyuka.zhiliao.hooks.HeadZoneBanner;
 import com.shatyuka.zhiliao.hooks.FollowButtonFeatureUI;
+import com.shatyuka.zhiliao.hooks.HeadZoneBanner;
 import com.shatyuka.zhiliao.hooks.HotBanner;
 import com.shatyuka.zhiliao.hooks.HotListFilter;
 import com.shatyuka.zhiliao.hooks.IHook;
@@ -37,8 +37,6 @@ import com.shatyuka.zhiliao.hooks.ThirdPartyLogin;
 import com.shatyuka.zhiliao.hooks.VIPBanner;
 import com.shatyuka.zhiliao.hooks.WebView;
 import com.shatyuka.zhiliao.hooks.ZhihuPreference;
-
-import de.robv.android.xposed.XposedBridge;
 
 public class Hooks {
     static final IHook[] HOOKS = {
@@ -85,7 +83,7 @@ public class Hooks {
                 hook.hook();
             } catch (Throwable e) {
                 Helper.toastIfVersionChange(hook.getName() + "功能加载失败，可能不支持当前版本知乎: " + Helper.packageInfo.versionName, Toast.LENGTH_LONG);
-                XposedBridge.log("[Zhiliao] " + e);
+                Helper.logD(Hooks.class.getSimpleName(), e);
             }
         }
         afterHooksInit();

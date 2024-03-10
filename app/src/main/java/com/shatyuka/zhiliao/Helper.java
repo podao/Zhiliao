@@ -379,6 +379,15 @@ public class Helper {
         }
     }
 
+    public static void logD(String tag, Throwable throwable) {
+        logD(tag, throwable.getMessage(), throwable);
+    }
+
+    public static void logD(String tag, String msg, Throwable throwable) {
+        XposedBridge.log(String.format("[Zhiliao][%s][D] %s", tag, msg));
+        XposedBridge.log(throwable);
+    }
+
     /**
      * JsonNode ObjectNode
      */
