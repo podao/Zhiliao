@@ -40,7 +40,6 @@ import de.robv.android.xposed.XposedBridge;
 
 public class Helper {
     public static Class<?> MorphAdHelper;
-    public static Class<?> AnswerPagerFragment;
     public static Class<?> IZhihuWebView;
     public static Class<?> WebViewClientWrapper;
 
@@ -90,7 +89,6 @@ public class Helper {
 
     public static void init_class(ClassLoader classLoader) throws Exception {
         MorphAdHelper = classLoader.loadClass("com.zhihu.android.morph.ad.utils.MorphAdHelper");
-        AnswerPagerFragment = classLoader.loadClass("com.zhihu.android.answer.module.pager.AnswerPagerFragment");
         try {
             IZhihuWebView = classLoader.loadClass("com.zhihu.android.app.mercury.api.IZhihuWebView");
         } catch (ClassNotFoundException ignore) {

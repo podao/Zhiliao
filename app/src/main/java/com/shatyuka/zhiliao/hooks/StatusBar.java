@@ -16,6 +16,7 @@ public class StatusBar implements IHook {
     static Class<?> CombinedDrawable;
     static Class<?> StatusBarDrawable;
     static Class<?> ThemeChangedEvent;
+    static Class<?> AnswerPagerFragment;
 
     static Method setColor;
 
@@ -61,6 +62,7 @@ public class StatusBar implements IHook {
             CombinedDrawable_statusBarDrawable = CombinedDrawable.getDeclaredField("j");
             CombinedDrawable_statusBarDrawable.setAccessible(true);
         }
+        AnswerPagerFragment = classLoader.loadClass("com.zhihu.android.answer.module.pager.AnswerPagerFragment");
     }
 
     @Override
@@ -79,7 +81,7 @@ public class StatusBar implements IHook {
                     param.args[0] = getStatusbarColor();
             }
         });
-        XposedHelpers.findAndHookMethod(Helper.AnswerPagerFragment, "onViewCreated", View.class, Bundle.class, new XC_MethodHook() {
+        XposedHelpers.findAndHookMethod(AnswerPagerFragment, "onViewCreated", View.class, Bundle.class, new XC_MethodHook() {
             @Override
             protected void afterHookedMethod(MethodHookParam param) {
                 if (Helper.prefs.getBoolean("switch_mainswitch", false) && Helper.prefs.getBoolean("switch_statusbar", false))
