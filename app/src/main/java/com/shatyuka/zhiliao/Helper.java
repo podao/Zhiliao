@@ -12,7 +12,6 @@ import android.content.pm.Signature;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.os.Build;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
@@ -55,7 +54,7 @@ public class Helper {
     public static Context context;
     public static SharedPreferences prefs;
     public static Resources modRes;
-    public static PackageInfo packageInfo;
+    public static PackageInfo zhihuPackageInfo;
 
     public static Object settingsView;
 
@@ -72,7 +71,7 @@ public class Helper {
             JsonNodeOp.init(classLoader);
 
             prefs = context.getSharedPreferences("zhiliao_preferences", Context.MODE_PRIVATE);
-            packageInfo = context.getPackageManager().getPackageInfo("com.zhihu.android", 0);
+            zhihuPackageInfo = context.getPackageManager().getPackageInfo("com.zhihu.android", 0);
 
             regex_title = compileRegex(prefs.getString("edit_title", ""));
             regex_author = compileRegex(prefs.getString("edit_author", ""));
@@ -174,32 +173,21 @@ public class Helper {
         toast.show();
     }
 
-    public static void toastIfVersionChange(CharSequence text, int duration) {
-        long lastAppVersion = prefs.getLong("app_version", 0);
-        long nowAppVersion;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            nowAppVersion = packageInfo.getLongVersionCode();
-        } else {
-            nowAppVersion = (long) packageInfo.versionCode;
-        }
+    public static void toastIfUpdated(CharSequence text, int duration) {
+        long lastZhihuUpdateTime = prefs.getLong("zhihu_last_update_time", 0);
+        long nowZhihuUpdateTime = zhihuPackageInfo.lastUpdateTime;
 
         long lastZhiliaoVersion = prefs.getLong("zhiliao_version", 0);
         long nowZhiliaoVersion = BuildConfig.VERSION_CODE;
 
-        boolean isVersionChange = nowAppVersion > lastAppVersion || nowZhiliaoVersion > lastZhiliaoVersion;
-        if (isVersionChange) {
+        boolean isUpdateTimeChange = nowZhihuUpdateTime > lastZhihuUpdateTime || nowZhiliaoVersion > lastZhiliaoVersion;
+        if (isUpdateTimeChange) {
             toast(text, duration);
         }
     }
 
-    public static void saveVersion() {
-        long nowAppVersion;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            nowAppVersion = packageInfo.getLongVersionCode();
-        } else {
-            nowAppVersion = (long) packageInfo.versionCode;
-        }
-        prefs.edit().putLong("app_version", nowAppVersion)
+    public static void savePackageInfo() {
+        prefs.edit().putLong("zhihu_last_update_time", zhihuPackageInfo.lastUpdateTime)
                 .putLong("zhiliao_version", BuildConfig.VERSION_CODE)
                 .apply();
     }

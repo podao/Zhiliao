@@ -82,7 +82,7 @@ public class Hooks {
                 hook.init(classLoader);
                 hook.hook();
             } catch (Throwable e) {
-                Helper.toastIfVersionChange(hook.getName() + "功能加载失败，可能不支持当前版本知乎: " + Helper.packageInfo.versionName, Toast.LENGTH_LONG);
+                Helper.toastIfUpdated(hook.getName() + "功能加载失败，可能不支持当前版本知乎: " + Helper.zhihuPackageInfo.versionName, Toast.LENGTH_LONG);
                 Helper.logD(Hooks.class.getSimpleName(), e);
             }
         }
@@ -90,6 +90,6 @@ public class Hooks {
     }
 
     private static void afterHooksInit() {
-        Helper.saveVersion();
+        Helper.savePackageInfo();
     }
 }

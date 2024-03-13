@@ -75,7 +75,7 @@ public class MainHook implements IXposedHookLoadPackage, IXposedHookZygoteInit {
                         Helper.dexKitBridge = createDexKitBridge(lpparam);
 
                         if (!Helper.init(lpparam.classLoader))
-                            Helper.toast("知了初始化失败，可能不支持当前版本知乎: " + Helper.packageInfo.versionName, Toast.LENGTH_SHORT);
+                            Helper.toast("知了初始化失败，可能不支持当前版本知乎: " + Helper.zhihuPackageInfo.versionName, Toast.LENGTH_SHORT);
                         else {
                             Hooks.init(lpparam.classLoader);
                             if (!Helper.prefs.getBoolean("switch_mainswitch", false))
