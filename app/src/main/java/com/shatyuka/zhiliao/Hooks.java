@@ -22,7 +22,6 @@ import com.shatyuka.zhiliao.hooks.HotBanner;
 import com.shatyuka.zhiliao.hooks.HotListFilter;
 import com.shatyuka.zhiliao.hooks.IHook;
 import com.shatyuka.zhiliao.hooks.LaunchAd;
-import com.shatyuka.zhiliao.hooks.LiveButton;
 import com.shatyuka.zhiliao.hooks.MineHybridView;
 import com.shatyuka.zhiliao.hooks.NavButton;
 import com.shatyuka.zhiliao.hooks.NavRes;
@@ -48,7 +47,6 @@ public class Hooks {
             new CommentAd(),
             new AnswerAd(),
             new ShareAd(),
-            new LiveButton(),
             new NextAnswer(),
             new RedDot(),
             new ExternLink(),

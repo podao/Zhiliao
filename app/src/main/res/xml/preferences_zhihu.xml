@@ -160,12 +160,6 @@
         <com.zhihu.android.app.ui.widget.SwitchPreference
             android:defaultValue="false"
             android:dependency="switch_mainswitch"
-            android:key="switch_livebutton"
-            android:title="移除直播按钮"
-            android:summary="移除首页左上角直播按钮"/>
-        <com.zhihu.android.app.ui.widget.SwitchPreference
-            android:defaultValue="false"
-            android:dependency="switch_mainswitch"
             android:key="switch_reddot"
             android:title="不显示小红点"
             android:summary="强迫症福音"/>

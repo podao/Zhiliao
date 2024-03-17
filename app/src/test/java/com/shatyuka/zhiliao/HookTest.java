@@ -9,7 +9,6 @@ import com.shatyuka.zhiliao.hooks.FeedAd;
 import com.shatyuka.zhiliao.hooks.HotBanner;
 import com.shatyuka.zhiliao.hooks.IHook;
 import com.shatyuka.zhiliao.hooks.LaunchAd;
-import com.shatyuka.zhiliao.hooks.LiveButton;
 import com.shatyuka.zhiliao.hooks.NavButton;
 import com.shatyuka.zhiliao.hooks.NavRes;
 import com.shatyuka.zhiliao.hooks.NextAnswer;
@@ -110,11 +109,6 @@ public class HookTest {
     @Test
     public void shareAdTest() {
         checkHook(new ShareAd());
-    }
-
-    @Test
-    public void liveButtonTest() {
-        checkHook(new LiveButton());
     }
 
     @Test
