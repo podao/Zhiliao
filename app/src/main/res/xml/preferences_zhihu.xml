@@ -202,6 +202,12 @@
         <com.zhihu.android.app.ui.widget.SwitchPreference
             android:defaultValue="false"
             android:dependency="switch_mainswitch"
+            android:key="switch_findnav"
+            android:title="隐藏发现按钮"
+            android:summary="隐藏导航栏发现按钮(AI问答)"/>
+        <com.zhihu.android.app.ui.widget.SwitchPreference
+            android:defaultValue="false"
+            android:dependency="switch_mainswitch"
             android:key="switch_hotbanner"
             android:title="隐藏热点通知"
             android:summary="隐藏顶部弹窗通知"/>
