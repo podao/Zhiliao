@@ -6,7 +6,8 @@ import de.robv.android.xposed.XposedBridge
 
 class FeedTopHotBanner : IHook {
 
-    private lateinit var feedTopHotAutoJacksonDeserializer: Class<*>
+    private lateinit var feedTopHot: Class<*>
+    private lateinit var templateHeaderHolder: Class<*>
 
     override fun getName(): String {
         return "隐藏推荐页置顶热门"
@@ -14,22 +15,24 @@ class FeedTopHotBanner : IHook {
 
     @Throws(Throwable::class)
     override fun init(classLoader: ClassLoader) {
-        feedTopHotAutoJacksonDeserializer =
-            classLoader.loadClass("com.zhihu.android.api.model.FeedTopHotAutoJacksonDeserializer")
+        feedTopHot = classLoader.loadClass("com.zhihu.android.api.model.FeedTopHot")
+        templateHeaderHolder =
+            classLoader.loadClass("com.zhihu.android.app.feed.ui.holder.template.optimal.TemplateHeaderHolder")
     }
 
     override fun hook() {
         XposedBridge.hookAllMethods(
-            feedTopHotAutoJacksonDeserializer,
-            "deserialize",
+            templateHeaderHolder,
+            "onBindData",
             object : XC_MethodHook() {
                 override fun beforeHookedMethod(param: MethodHookParam) {
                     if (Helper.prefs.getBoolean("switch_mainswitch", false)
                         && Helper.prefs.getBoolean("switch_feedtophot", false)
                     ) {
-                        param.setResult(null)
+                        param.args[0] = feedTopHot.constructors[0].newInstance()
                     }
                 }
-            })
+            }
+        )
     }
 }
