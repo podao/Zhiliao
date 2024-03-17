@@ -17,7 +17,6 @@ import com.shatyuka.zhiliao.hooks.FeedAd;
 import com.shatyuka.zhiliao.hooks.FeedTopHotBanner;
 import com.shatyuka.zhiliao.hooks.FollowButton;
 import com.shatyuka.zhiliao.hooks.FollowButtonFeatureUI;
-import com.shatyuka.zhiliao.hooks.HeadZoneBanner;
 import com.shatyuka.zhiliao.hooks.HotBanner;
 import com.shatyuka.zhiliao.hooks.HotListFilter;
 import com.shatyuka.zhiliao.hooks.IHook;
@@ -63,7 +62,6 @@ public class Hooks {
             new WebView(),
             new Cleaner(),
             new FeedTopHotBanner(),
-            new HeadZoneBanner(),
             new MineHybridView(),
             new FollowButton(),
             new FollowButtonFeatureUI(),

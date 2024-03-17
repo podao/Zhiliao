@@ -33,6 +33,7 @@ class HotListFilter : IHook {
     private lateinit var templateCardModel: Class<*>
     private lateinit var templateCardModel_dataField: Field
     private lateinit var basePagingFragment: Class<*>
+    private lateinit var headZone: Field
 
     private companion object {
         val QUESTION_URL_PATTERN = Pattern.compile("zhihu\\.com/question/")
@@ -86,6 +87,9 @@ class HotListFilter : IHook {
         templateCardModel = classLoader.loadClass("com.zhihu.android.bean.TemplateCardModel")
         templateCardModel_dataField = templateCardModel.getField("data")
         templateCardModel_dataField.isAccessible = true
+
+        headZone = rankFeedList.getDeclaredField("head_zone")
+        headZone.isAccessible = true
     }
 
     @Throws(Throwable::class)
@@ -99,6 +103,7 @@ class HotListFilter : IHook {
                     if (!Helper.prefs.getBoolean("switch_mainswitch", false)) {
                         return
                     }
+                    preProcessRankFeed(param.args[0])
                     filterRankFeed(param.args[0])
                 }
             })
@@ -151,7 +156,7 @@ class HotListFilter : IHook {
                         || isAd(feed as Any)
                         || shouldFilterEveryoneSeeRankFeed(feed)
             } catch (e: Exception) {
-                Helper.logD(this::class.simpleName,e)
+                Helper.logD(this::class.simpleName, e)
                 return@removeIf false
             }
         }
@@ -214,9 +219,13 @@ class HotListFilter : IHook {
                     Optional.ofNullable(linkArea_urlField[linkAreaInstance] as String).orElse("")
                 return !QUESTION_URL_PATTERN.matcher(url).find()
             } catch (e: Exception) {
-                Helper.logD(this::class.simpleName,e)
+                Helper.logD(this::class.simpleName, e)
             }
         }
         return false
+    }
+
+    private fun preProcessRankFeed(rankFeed: Any) {
+        headZone.set(rankFeed, null)
     }
 }
