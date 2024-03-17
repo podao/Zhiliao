@@ -5,9 +5,10 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.shatyuka.zhiliao.Helper
 import de.robv.android.xposed.XC_MethodHook
+import de.robv.android.xposed.XC_MethodReplacement.returnConstant
 import de.robv.android.xposed.XposedBridge
 import java.lang.reflect.Field
-import java.util.Arrays
+
 
 class FollowButtonFeatureUI : IHook {
 
@@ -17,6 +18,7 @@ class FollowButtonFeatureUI : IHook {
     private lateinit var followPeopleButton: Class<*>
     private lateinit var followWithAvatarViewFromImplField: Field
     private lateinit var followPeopleButtonField: Field
+    private var followModelKt: Class<*>? = null
 
     override fun getName(): String {
         return "去关注按钮(FeatureUI)"
@@ -35,6 +37,13 @@ class FollowButtonFeatureUI : IHook {
         followPeopleButton =
             classLoader.loadClass("com.zhihu.android.unify_interactive.view.follow.FollowPeopleButton")
         followPeopleButtonField = Helper.findFieldByType(followButtonViewImpl, followPeopleButton)
+
+        try {
+            followModelKt =
+                classLoader.loadClass("com.zhihu.android.unify_interactive.model.follow.FollowModelKt")
+        } catch (e: Exception) {
+            Helper.logD(this::class.simpleName, e)
+        }
     }
 
     @Throws(Throwable::class)
@@ -63,5 +72,14 @@ class FollowButtonFeatureUI : IHook {
                 }
             }
         })
+
+        if (followModelKt != null) {
+            XposedBridge.hookAllMethods(
+                followModelKt,
+                "showFollow",
+                returnConstant(false)
+            )
+        }
+
     }
 }
