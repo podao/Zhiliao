@@ -177,9 +177,12 @@ class RedDot : IHook {
         if (ViewModel != null) {
             findAndHookConstructor(ViewModel, View::class.java, object : XC_MethodHook() {
                 override fun afterHookedMethod(param: MethodHookParam) {
-                    val view = param.args[0] as ViewGroup
-                    if (view.childCount == 2) { // red_parent
-                        view.visibility = View.GONE
+                    if (param.args[0] is ViewGroup) {
+                        val view = param.args[0] as ViewGroup
+                        if (view.childCount == 2) {
+                            // red_parent
+                            view.visibility = View.GONE
+                        }
                     }
                 }
             })
