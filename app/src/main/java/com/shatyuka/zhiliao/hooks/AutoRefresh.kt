@@ -2,7 +2,8 @@ package com.shatyuka.zhiliao.hooks
 
 import com.shatyuka.zhiliao.Helper
 import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedBridge
+import de.robv.android.xposed.XC_MethodReplacement.returnConstant
+import de.robv.android.xposed.XposedBridge.hookMethod
 import org.luckypray.dexkit.query.matchers.MethodMatcher
 import java.lang.reflect.Method
 import java.lang.reflect.Modifier
@@ -10,11 +11,9 @@ import java.util.Arrays
 
 class AutoRefresh : IHook {
 
-    private lateinit var feedAutoRefreshManager_shouldRefresh: Method
-
-    private lateinit var feedHotRefreshAbConfig_shouldRefresh: Method
-
-    private lateinit var mainPageFragment_getFragment: Method
+    private var feedAutoRefreshManager_shouldRefresh: Method? = null
+    private var feedHotRefreshAbConfig_shouldRefresh: Method? = null
+    private var mainPageFragment_getFragment: Method? = null
 
     override fun getName(): String {
         return "关闭首页自动刷新"
@@ -30,48 +29,43 @@ class AutoRefresh : IHook {
         val mainPageFragment =
             classLoader.loadClass("com.zhihu.android.app.feed.explore.view.MainPageFragment")
         val fragment = classLoader.loadClass("androidx.fragment.app.Fragment")
-        mainPageFragment_getFragment = Arrays.stream(mainPageFragment.getDeclaredMethods())
-            .filter { method: Method -> Modifier.isFinal(method.modifiers) }
-            .filter { method: Method -> method.returnType == fragment }
-            .filter { method: Method -> method.parameterCount == 0 }.findFirst().get()
+        try {
+            mainPageFragment_getFragment = Arrays.stream(mainPageFragment.getDeclaredMethods())
+                .filter { method: Method -> Modifier.isFinal(method.modifiers) }
+                .filter { method: Method -> method.returnType == fragment }
+                .filter { method: Method -> method.parameterCount == 0 }.findFirst().get()
+        } catch (e: Exception) {
+            logE(e)
+        }
     }
 
     @Throws(Throwable::class)
     override fun hook() {
-        XposedBridge.hookMethod(feedAutoRefreshManager_shouldRefresh, object : XC_MethodHook() {
-            @Throws(Throwable::class)
-            override fun beforeHookedMethod(param: MethodHookParam) {
-                if (Helper.prefs.getBoolean("switch_mainswitch", false)
-                    && Helper.prefs.getBoolean("switch_autorefresh", true)
-                ) {
+        if (!Helper.prefs.getBoolean("switch_mainswitch", false)
+            || !Helper.prefs.getBoolean("switch_autorefresh", true)
+        ) {
+            return
+        }
+
+        if (feedAutoRefreshManager_shouldRefresh != null) {
+            hookMethod(feedAutoRefreshManager_shouldRefresh, object : XC_MethodHook() {
+                @Throws(Throwable::class)
+                override fun beforeHookedMethod(param: MethodHookParam) {
                     param.args[0] = 0
                 }
-            }
-        })
-        XposedBridge.hookMethod(feedHotRefreshAbConfig_shouldRefresh, object : XC_MethodHook() {
-            @Throws(Throwable::class)
-            override fun beforeHookedMethod(param: MethodHookParam) {
-                if (Helper.prefs.getBoolean("switch_mainswitch", false)
-                    && Helper.prefs.getBoolean("switch_autorefresh", true)
-                ) {
-                    param.setResult(false)
-                }
-            }
-        })
-        XposedBridge.hookMethod(mainPageFragment_getFragment, object : XC_MethodHook() {
-            @Throws(Throwable::class)
-            override fun beforeHookedMethod(param: MethodHookParam) {
-                if (Helper.prefs.getBoolean("switch_mainswitch", false)
-                    && Helper.prefs.getBoolean("switch_autorefresh", true)
-                ) {
-                    param.setResult(null)
-                }
-            }
-        })
+            })
+        }
+
+        if (feedHotRefreshAbConfig_shouldRefresh != null) {
+            hookMethod(feedHotRefreshAbConfig_shouldRefresh, returnConstant(false))
+        }
+
+        if (mainPageFragment_getFragment != null) {
+            hookMethod(mainPageFragment_getFragment, returnConstant(null))
+        }
     }
 
-    @Throws(NoSuchMethodException::class)
-    private fun findFeedHotRefreshAbConfigShouldRefreshMethod(classLoader: ClassLoader): Method {
+    private fun findFeedHotRefreshAbConfigShouldRefreshMethod(classLoader: ClassLoader): Method? {
         val matcher: MethodMatcher = MethodMatcher.create()
             .returnType(Boolean::class.javaPrimitiveType as Class<*>)
             .paramCount(1)
@@ -84,17 +78,18 @@ class AutoRefresh : IHook {
             classLoader
         )
         if (methodList.isEmpty()) {
-            throw NoSuchMethodException("com.zhihu.android.app.feed.util.FeedHotRefreshAbConfig#shouldRefresh")
+            logE(NoSuchMethodException("com.zhihu.android.app.feed.util.FeedHotRefreshAbConfig#shouldRefresh"))
+            return null
         }
         if (methodList.size > 1) {
-            throw Exception("multi methods have bool(long)")
+            logE(IllegalStateException("multi methods have bool(long)"))
+            return null
         }
 
         return methodList[0]
     }
 
-    @Throws(NoSuchMethodException::class)
-    private fun findFeedAutoRefreshManagerShouldRefreshMethod(classLoader: ClassLoader): Method {
+    private fun findFeedAutoRefreshManagerShouldRefreshMethod(classLoader: ClassLoader): Method? {
         val matcher: MethodMatcher = MethodMatcher.create()
             .returnType(Void::class.javaPrimitiveType as Class<*>)
             .paramCount(4)
@@ -107,13 +102,19 @@ class AutoRefresh : IHook {
             classLoader
         )
         if (methodList.isEmpty()) {
-            throw NoSuchMethodException("com.zhihu.android.app.feed.util.FeedAutoRefreshManager#shouldRefresh")
+            logE(NoSuchMethodException("com.zhihu.android.app.feed.util.FeedAutoRefreshManager#shouldRefresh"))
+            return null
         }
         if (methodList.size > 1) {
-            throw Exception("multi methods have void(long,int,object,object)")
+            logE(IllegalStateException("multi methods have void(long,int,object,object)"))
+            return null
         }
 
         return methodList[0]
+    }
+
+    private fun logE(e: Exception) {
+        Helper.logD(this::class.simpleName, e)
     }
 
 }

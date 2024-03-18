@@ -5,6 +5,7 @@ import com.shatyuka.zhiliao.Helper
 import com.shatyuka.zhiliao.Helper.JsonNodeOp
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
+import de.robv.android.xposed.XposedBridge.hookMethod
 import org.luckypray.dexkit.query.matchers.ClassMatcher
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
@@ -32,22 +33,21 @@ class CardViewFeatureShortFilter : IHook {
 
     @Throws(Throwable::class)
     override fun hook() {
-        XposedBridge.hookMethod(mixupDataParser_jsonNode2List, object : XC_MethodHook() {
-            @Throws(Throwable::class)
-            override fun beforeHookedMethod(param: MethodHookParam) {
-                if (!Helper.prefs.getBoolean("switch_mainswitch", false)) {
-                    return
-                }
-                if (Helper.prefs.getBoolean("switch_feedad", true)) {
+        if (!Helper.prefs.getBoolean("switch_mainswitch", false)) {
+            return
+        }
+
+        if (Helper.prefs.getBoolean("switch_feedad", true)) {
+            hookMethod(mixupDataParser_jsonNode2List, object : XC_MethodHook() {
+                @Throws(Throwable::class)
+                override fun beforeHookedMethod(param: MethodHookParam) {
                     filterShortContent(param.args[0])
                 }
-            }
-        })
-        XposedBridge.hookMethod(mixupDataParser_jsonNode2Object, object : XC_MethodHook() {
+            })
+        }
+
+        hookMethod(mixupDataParser_jsonNode2Object, object : XC_MethodHook() {
             override fun beforeHookedMethod(param: MethodHookParam) {
-                if (!Helper.prefs.getBoolean("switch_mainswitch", false)) {
-                    return
-                }
                 preProcessShortContent(param.args[0])
             }
         })
@@ -120,7 +120,7 @@ class CardViewFeatureShortFilter : IHook {
             try {
                 return isAd(shortContentJsonNode) || hasMoreType(shortContentJsonNode)
             } catch (e: Exception) {
-                Helper.logD(this::class.simpleName,e)
+                logE(e)
             }
             return false
         }
@@ -160,12 +160,12 @@ class CardViewFeatureShortFilter : IHook {
                     JsonNodeOp.ObjectNode_put.invoke(searchWordJsonNode, "queries", null)
                 }
             } catch (e: Exception) {
-                Helper.logD(this::class.simpleName,e)
+                logE(e)
             }
             try {
                 JsonNodeOp.ObjectNode_put.invoke(shortContentJsonNode, "relationship_tips", null)
             } catch (e: Exception) {
-                Helper.logD(this::class.simpleName,e)
+                logE(e)
             }
             if (Helper.prefs.getBoolean("switch_related", false)) {
                 try {
@@ -179,9 +179,13 @@ class CardViewFeatureShortFilter : IHook {
                         }
                     }
                 } catch (e: Exception) {
-                    Helper.logD(this::class.simpleName,e)
+                    logE(e)
                 }
             }
+        }
+
+        private fun logE(e: Exception) {
+            Helper.logD(CardViewFeatureShortFilter::class.simpleName, e)
         }
     }
 }

@@ -40,14 +40,14 @@ class RedDot : IHook {
             NotiMsgModel =
                 classLoader.loadClass("com.zhihu.android.notification.model.viewmodel.NotiMsgModel")
         } catch (e: Exception) {
-            logD(e)
+            logE(e)
         }
 
         try {
             ViewModel =
                 classLoader.loadClass("com.zhihu.android.app.feed.ui.fragment.help.tabhelp.model.ViewModel")
         } catch (e: Exception) {
-            logD(e)
+            logE(e)
         }
         try {
             BottomNavMenuItemView_setUnreadCount = Helper.getMethodByParameterTypes(
@@ -55,7 +55,7 @@ class RedDot : IHook {
                 Int::class.javaPrimitiveType
             )
         } catch (e: Exception) {
-            logD(e)
+            logE(e)
         }
         try {
             BottomNavMenuItemViewForIconOnly_setUnreadCount = Helper.getMethodByParameterTypes(
@@ -63,7 +63,7 @@ class RedDot : IHook {
                 Int::class.javaPrimitiveType
             )
         } catch (e: Exception) {
-            logD(e)
+            logE(e)
         }
 
         try {
@@ -72,7 +72,7 @@ class RedDot : IHook {
                 classLoader.loadClass("com.zhihu.android.bottomnav.api.model.NavBadge")
             )
         } catch (e: Exception) {
-            logD(e)
+            logE(e)
         }
         try {
             IconWithDotAndCountView_setUnreadCount = Helper.getMethodByParameterTypes(
@@ -82,7 +82,7 @@ class RedDot : IHook {
                 Int::class.javaPrimitiveType
             )
         } catch (e: Exception) {
-            logD(e)
+            logE(e)
         }
 
         try {
@@ -92,7 +92,7 @@ class RedDot : IHook {
                 Boolean::class.javaPrimitiveType
             )
         } catch (e: Exception) {
-            logD(e)
+            logE(e)
         }
 
         try {
@@ -103,7 +103,7 @@ class RedDot : IHook {
                     Boolean::class.javaPrimitiveType
                 )
         } catch (e: Exception) {
-            logD(e)
+            logE(e)
         }
 
         try {
@@ -111,14 +111,14 @@ class RedDot : IHook {
                 classLoader.loadClass("com.zhihu.android.app.feed.ui2.tab.RevisitView")
                     .getDeclaredMethod("getCanShowRedDot")
         } catch (e: Exception) {
-            logD(e)
+            logE(e)
         }
 
         try {
             customTabView =
                 classLoader.loadClass("com.zhihu.android.app.feed.explore.view.CustomTabContainerView\$CustomTabView")
         } catch (e: Exception) {
-            logD(e)
+            logE(e)
         }
 
     }
@@ -196,12 +196,12 @@ class RedDot : IHook {
             if (setNumText != null) {
                 hookMethod(setNumText, DO_NOTHING)
             } else {
-                logD(NoSuchMethodException("no CustomTabView#void(String)"))
+                logE(NoSuchMethodException("no CustomTabView#void(String)"))
             }
         }
     }
 
-    private fun logD(e: Exception) {
+    private fun logE(e: Exception) {
         Helper.logD(this::class.simpleName, e)
     }
 }

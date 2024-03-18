@@ -27,7 +27,9 @@ class LaunchAd : IHook {
 
     @Throws(Throwable::class)
     override fun hook() {
-        if (!disableAd()) {
+        if (!Helper.prefs.getBoolean("switch_mainswitch", false)
+            || !Helper.prefs.getBoolean("switch_launchad", true)
+        ) {
             return
         }
 
@@ -124,10 +126,7 @@ class LaunchAd : IHook {
             classLoader
         )
         if (methodList.isEmpty() || methodList.size > 1) {
-            Helper.logD(
-                this::class.simpleName,
-                NoSuchMethodException("no AdSpecialDataProvider#resolveAdvert or multi")
-            )
+            logE(NoSuchMethodException("no AdSpecialDataProvider#resolveAdvert or multi"))
             return null
         }
         return methodList[0]
@@ -159,25 +158,19 @@ class LaunchAd : IHook {
             classLoader
         )
         if (launchAdHelper == null) {
-            Helper.logD(
-                this::class.simpleName,
-                ClassNotFoundException("no class LaunchAdHelper or multi")
-            )
+            logE(ClassNotFoundException("no class LaunchAdHelper or multi"))
             return null
         }
         return try {
             launchAdHelper.getDeclaredMethod("isShowLaunchAd")
         } catch (e: Exception) {
-            Helper.logD(
-                this::class.simpleName,
-                NoSuchMethodException("no LaunchAdHelper#isShowLaunchAd or multi")
-            )
+            logE(e)
             null
         }
     }
 
-    private fun disableAd(): Boolean {
-        return Helper.prefs.getBoolean("switch_mainswitch", false)
-                && Helper.prefs.getBoolean("switch_launchad", true)
+    private fun logE(e: Exception) {
+        Helper.logD(this::class.simpleName, e)
     }
+
 }

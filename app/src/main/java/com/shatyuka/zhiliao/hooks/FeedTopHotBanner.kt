@@ -2,7 +2,7 @@ package com.shatyuka.zhiliao.hooks
 
 import com.shatyuka.zhiliao.Helper
 import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedBridge
+import de.robv.android.xposed.XposedBridge.hookAllMethods
 
 class FeedTopHotBanner : IHook {
 
@@ -21,16 +21,16 @@ class FeedTopHotBanner : IHook {
     }
 
     override fun hook() {
-        XposedBridge.hookAllMethods(
-            templateHeaderHolder,
-            "onBindData",
+        if (!Helper.prefs.getBoolean("switch_mainswitch", false)
+            || !Helper.prefs.getBoolean("switch_feedtophot", false)
+        ) {
+            return
+        }
+
+        hookAllMethods(templateHeaderHolder, "onBindData",
             object : XC_MethodHook() {
                 override fun beforeHookedMethod(param: MethodHookParam) {
-                    if (Helper.prefs.getBoolean("switch_mainswitch", false)
-                        && Helper.prefs.getBoolean("switch_feedtophot", false)
-                    ) {
-                        param.args[0] = feedTopHot.constructors[0].newInstance()
-                    }
+                    param.args[0] = feedTopHot.constructors[0].newInstance()
                 }
             }
         )

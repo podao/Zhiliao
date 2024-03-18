@@ -4,6 +4,7 @@ import com.shatyuka.zhiliao.Helper
 import com.shatyuka.zhiliao.Helper.JsonNodeOp
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
+import de.robv.android.xposed.XposedBridge.hookAllMethods
 import java.lang.reflect.Field
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
@@ -94,40 +95,31 @@ class HotListFilter : IHook {
 
     @Throws(Throwable::class)
     override fun hook() {
-        XposedBridge.hookAllMethods(
-            feedsHotListFragment2,
-            "postRefreshSucceed",
-            object : XC_MethodHook() {
-                @Throws(Throwable::class)
-                override fun beforeHookedMethod(param: MethodHookParam) {
-                    if (!Helper.prefs.getBoolean("switch_mainswitch", false)) {
-                        return
-                    }
-                    preProcessRankFeed(param.args[0])
+        if (!Helper.prefs.getBoolean("switch_mainswitch", false)) {
+            return
+        }
+
+        hookAllMethods(feedsHotListFragment2, "postRefreshSucceed", object : XC_MethodHook() {
+            @Throws(Throwable::class)
+            override fun beforeHookedMethod(param: MethodHookParam) {
+                preProcessRankFeed(param.args[0])
+                filterRankFeed(param.args[0])
+            }
+        })
+
+        hookAllMethods(basePagingFragment, "postLoadMoreSucceed", object : XC_MethodHook() {
+            @Throws(Throwable::class)
+            override fun beforeHookedMethod(param: MethodHookParam) {
+                if (param.thisObject.javaClass == feedsHotListFragment2) {
                     filterRankFeed(param.args[0])
                 }
-            })
-        XposedBridge.hookAllMethods(
-            basePagingFragment,
-            "postLoadMoreSucceed",
-            object : XC_MethodHook() {
-                @Throws(Throwable::class)
-                override fun beforeHookedMethod(param: MethodHookParam) {
-                    if (!Helper.prefs.getBoolean("switch_mainswitch", false)) {
-                        return
-                    }
-                    if (param.thisObject.javaClass == feedsHotListFragment2) {
-                        filterRankFeed(param.args[0])
-                    }
-                }
-            })
+            }
+        })
+
         for (processRankList in retAndArgTypeQqResponseMethodList) {
             XposedBridge.hookMethod(processRankList, object : XC_MethodHook() {
                 @Throws(Throwable::class)
                 override fun beforeHookedMethod(param: MethodHookParam) {
-                    if (!Helper.prefs.getBoolean("switch_mainswitch", false)) {
-                        return
-                    }
                     val rankFeedList = response_bodyField[param.args[0]] ?: return
                     val rankFeedListData = ZHObjectListDataField[rankFeedList] as List<*>
                     if (rankFeedListData.isEmpty()) {

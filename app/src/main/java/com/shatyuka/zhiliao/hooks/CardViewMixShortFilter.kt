@@ -5,11 +5,10 @@ import com.shatyuka.zhiliao.Helper.JsonNodeOp
 import com.shatyuka.zhiliao.hooks.CardViewFeatureShortFilter.Companion.preProcessShortContent
 import com.shatyuka.zhiliao.hooks.CardViewFeatureShortFilter.Companion.shouldRemoveShortContent
 import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedBridge
+import de.robv.android.xposed.XposedBridge.hookMethod
 import org.luckypray.dexkit.query.matchers.ClassMatcher
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
-import java.util.ArrayList
 import java.util.Arrays
 
 class CardViewMixShortFilter : IHook {
@@ -27,15 +26,16 @@ class CardViewMixShortFilter : IHook {
 
     @Throws(Throwable::class)
     override fun hook() {
-        XposedBridge.hookMethod(mixupDataParser_jsonNode2List, object : XC_MethodHook() {
+        if (!Helper.prefs.getBoolean("switch_mainswitch", false)
+            || !Helper.prefs.getBoolean("switch_feedad", false)
+        ) {
+            return
+        }
+
+        hookMethod(mixupDataParser_jsonNode2List, object : XC_MethodHook() {
             @Throws(Throwable::class)
             override fun beforeHookedMethod(param: MethodHookParam) {
-                if (!Helper.prefs.getBoolean("switch_mainswitch", false)) {
-                    return
-                }
-                if (Helper.prefs.getBoolean("switch_feedad", false)) {
-                    filterShortContent(param.args[0])
-                }
+                filterShortContent(param.args[0])
             }
         })
     }

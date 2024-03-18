@@ -3,7 +3,7 @@ package com.shatyuka.zhiliao.hooks
 import android.view.View
 import com.shatyuka.zhiliao.Helper
 import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedBridge
+import de.robv.android.xposed.XposedBridge.hookAllMethods
 import java.lang.reflect.Field
 import java.util.Arrays
 
@@ -31,15 +31,17 @@ class MineHybridView : IHook {
 
     @Throws(Throwable::class)
     override fun hook() {
-        XposedBridge.hookAllMethods(mineTabFragment, "onCreateView", object : XC_MethodHook() {
+        if (!Helper.prefs.getBoolean("switch_mainswitch", false)
+            || !Helper.prefs.getBoolean("switch_minehybrid", false)
+        ) {
+            return
+        }
+
+        hookAllMethods(mineTabFragment, "onCreateView", object : XC_MethodHook() {
             @Throws(Throwable::class)
             override fun afterHookedMethod(param: MethodHookParam) {
-                if (Helper.prefs.getBoolean("switch_mainswitch", false)
-                    && Helper.prefs.getBoolean("switch_minehybrid", false)
-                ) {
-                    val mineHybridView = mineHybridViewField.get(param.thisObject) as View
-                    mineHybridView.visibility = View.GONE
-                }
+                val mineHybridView = mineHybridViewField.get(param.thisObject) as View
+                mineHybridView.visibility = View.GONE
             }
         })
     }

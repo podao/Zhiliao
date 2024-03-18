@@ -1,8 +1,8 @@
 package com.shatyuka.zhiliao.hooks
 
 import com.shatyuka.zhiliao.Helper
-import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedBridge
+import de.robv.android.xposed.XC_MethodReplacement.returnConstant
+import de.robv.android.xposed.XposedBridge.hookMethod
 import org.luckypray.dexkit.query.matchers.ClassMatcher
 import java.lang.reflect.Method
 import java.util.Arrays
@@ -34,17 +34,16 @@ class PanelBubble : IHook {
 
     @Throws(Throwable::class)
     override fun hook() {
-        for (buildBubbleViewMethod in buildBubbleViewMethodList) {
-            XposedBridge.hookMethod(buildBubbleViewMethod, object : XC_MethodHook() {
-                override fun beforeHookedMethod(param: MethodHookParam) {
-                    if (Helper.prefs.getBoolean("switch_mainswitch", false)
-                        && Helper.prefs.getBoolean("switch_panelbubble", true)
-                    ) {
-                        param.setResult(null)
-                    }
-                }
-            })
+        if (!Helper.prefs.getBoolean("switch_mainswitch", false)
+            || !Helper.prefs.getBoolean("switch_panelbubble", true)
+        ) {
+            return
         }
+
+        for (buildBubbleViewMethod in buildBubbleViewMethodList) {
+            hookMethod(buildBubbleViewMethod, returnConstant(null))
+        }
+
     }
 
     @Throws(ClassNotFoundException::class)
