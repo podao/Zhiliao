@@ -9,6 +9,7 @@ import de.robv.android.xposed.XposedBridge
 import org.luckypray.dexkit.query.matchers.ClassMatcher
 import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
+import java.util.ArrayList
 import java.util.Arrays
 
 class CardViewMixShortFilter : IHook {
@@ -59,28 +60,24 @@ class CardViewMixShortFilter : IHook {
 
     @Throws(NoSuchMethodException::class)
     private fun findJsonNode2List(classLoader: ClassLoader): Method {
-        val classMatcher: ClassMatcher = ClassMatcher.create().methods {
-            add {
-                paramCount = 1
-                returnType(List::class.java)
-                paramTypes(JsonNodeOp.JsonNode)
-                usingStrings("")
+        val classMatcher: ClassMatcher = ClassMatcher.create()
+            .fields {
+                add {
+                    type(ArrayList::class.java)
+                }
+            }.methods {
+                add {
+                    paramCount = 1
+                    returnType(List::class.java)
+                    paramTypes(JsonNodeOp.JsonNode)
+                    usingStrings("")
+                }
+                count(4..6)
             }
-            count(4..6)
-        }
 
         val mixupDataParserClass = Helper.findClass(
-            listOf("com.zhihu.android.mixshortcontainer"),
-            listOf(
-                "com.zhihu.android.mixshortcontainer.dataflow.model",
-                "com.zhihu.android.mixshortcontainer.config",
-                "com.zhihu.android.mixshortcontainer.consecutivescroll",
-                "com.zhihu.android.mixshortcontainer.foundation",
-                "com.zhihu.android.mixshortcontainer.function",
-                "com.zhihu.android.mixshortcontainer.holder",
-                "com.zhihu.android.mixshortcontainer.model",
-                "com.zhihu.android.mixshortcontainer.nexttodetail",
-            ),
+            listOf("com.zhihu.android.mixshortcontainer.dataflow"),
+            listOf("com.zhihu.android.mixshortcontainer.dataflow.model"),
             classMatcher, classLoader
         ) ?: throw ClassNotFoundException("com.zhihu.android.mixshortcontainer.dataflow.*.*.MixupDataParser")
 
