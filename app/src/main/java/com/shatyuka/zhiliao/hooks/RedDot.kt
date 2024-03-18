@@ -192,12 +192,12 @@ class RedDot : IHook {
         }
 
         if (customTabView != null) {
-            hookMethod(
-                Helper.getMethodByParameterTypes(
-                    customTabView,
-                    String::class.java
-                ), DO_NOTHING
-            )
+            val setNumText = Helper.getMethodByParameterTypes(customTabView, String::class.java)
+            if (setNumText != null) {
+                hookMethod(setNumText, DO_NOTHING)
+            } else {
+                logD(NoSuchMethodException("no CustomTabView#void(String)"))
+            }
         }
     }
 
