@@ -20,7 +20,6 @@ class HotListFilter : IHook {
     private lateinit var ZHObjectList: Class<*>
     private lateinit var ZHObjectListDataField: Field
     private lateinit var rankFeedModule: Class<*>
-    private lateinit var hotLoadMore: Class<*>
     private lateinit var rankFeed: Class<*>
     private lateinit var rankFeedContent: Class<*>
     private lateinit var linkArea: Class<*>
@@ -31,7 +30,7 @@ class HotListFilter : IHook {
     private lateinit var response_bodyField: Field
     private lateinit var retAndArgTypeQqResponseMethodList: List<Method>
     private lateinit var rankFeedList_displayNumField: Field
-    private lateinit var templateCardModel: Class<*>
+    private var templateCardModel: Class<*>? = null
     private lateinit var templateCardModel_dataField: Field
     private lateinit var basePagingFragment: Class<*>
     private lateinit var headZone: Field
@@ -57,7 +56,6 @@ class HotListFilter : IHook {
         ZHObjectListDataField.isAccessible = true
 
         rankFeedModule = classLoader.loadClass("com.zhihu.android.api.model.RankFeedModule")
-        hotLoadMore = classLoader.loadClass("com.zhihu.android.app.feed.ui.holder.hot.HotLoadMore")
         rankFeed = classLoader.loadClass("com.zhihu.android.api.model.RankFeed")
         rankFeedContent = classLoader.loadClass("com.zhihu.android.api.model.RankFeedContent")
         linkArea = classLoader.loadClass("com.zhihu.android.api.model.RankFeedContent\$LinkArea")
@@ -85,9 +83,13 @@ class HotListFilter : IHook {
         rankFeedList_displayNumField = rankFeedList.getDeclaredField("display_num")
         rankFeedList_displayNumField.isAccessible = true
 
-        templateCardModel = classLoader.loadClass("com.zhihu.android.bean.TemplateCardModel")
-        templateCardModel_dataField = templateCardModel.getField("data")
-        templateCardModel_dataField.isAccessible = true
+        try {
+            templateCardModel = classLoader.loadClass("com.zhihu.android.bean.TemplateCardModel")
+            templateCardModel_dataField = templateCardModel!!.getField("data")
+            templateCardModel_dataField.isAccessible = true
+        } catch (e: Exception) {
+            Helper.logD(this::class.simpleName, e)
+        }
 
         headZone = rankFeedList.getDeclaredField("head_zone")
         headZone.isAccessible = true
