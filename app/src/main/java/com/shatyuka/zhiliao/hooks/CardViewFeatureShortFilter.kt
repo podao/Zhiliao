@@ -130,11 +130,8 @@ class CardViewFeatureShortFilter : IHook {
             if (JsonNodeOp.JsonNode_get.invoke(shortContentJsonNode, "adjson") != null) {
                 return true
             }
-            val adInfo = JsonNodeOp.JsonNode_get.invoke(shortContentJsonNode, "ad_info")
-            if (adInfo == null) {
-                XposedBridge.log(shortContentJsonNode.toString())
-                return false
-            }
+            val adInfo =
+                JsonNodeOp.JsonNode_get.invoke(shortContentJsonNode, "ad_info") ?: return false
             val adInfoData = JsonNodeOp.JsonNode_get.invoke(adInfo, "data")
             return if (adInfoData != null) {
                 // "" , "{}"
