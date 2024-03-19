@@ -115,9 +115,12 @@ public class CustomFilter implements IHook {
                                     }
                                 }
                                 if (Helper.regex_content != null) {
-                                    String content = (String) ApiText_panel_text.get(ApiFeedContent_content.get(feed_content));
-                                    if (Helper.regex_content.matcher(content).find()) {
-                                        param.setResult(null);
+                                    Object content = ApiFeedContent_content.get(feed_content);
+                                    if (content != null) {
+                                        String contentStr = (String) ApiText_panel_text.get(content);
+                                        if (Helper.regex_content.matcher(contentStr).find()) {
+                                            param.setResult(null);
+                                        }
                                     }
                                 }
                             }
