@@ -20,7 +20,7 @@ class PanelBubble : IHook {
     override fun init(classLoader: ClassLoader) {
         val bubbleViewNew = classLoader.loadClass("com.zhihu.android.panel.ui.bubble.BubbleViewNew")
         val bubbleView = classLoader.loadClass("com.zhihu.android.panel.ui.bubble.BubbleView")
-        val panelBubbleUtilNew = findPanelBubbleUtilNewClass(classLoader, bubbleViewNew, bubbleView)
+        val panelBubbleUtilNew = findPanelBubbleUtilNewClass(classLoader, bubbleViewNew)
         buildBubbleViewMethodList = Arrays.stream(panelBubbleUtilNew.getDeclaredMethods())
             .filter { method: Method -> method.parameterCount == 1 }
             .filter { method: Method ->
@@ -49,17 +49,11 @@ class PanelBubble : IHook {
     @Throws(ClassNotFoundException::class)
     private fun findPanelBubbleUtilNewClass(
         classLoader: ClassLoader,
-        bubbleViewNew: Class<*>,
-        bubbleView: Class<*>
+        bubbleViewNew: Class<*>
     ): Class<*> {
-
         val matcher: ClassMatcher = ClassMatcher.create().methods {
             add {
                 returnType = bubbleViewNew.name
-                paramCount = 1
-            }
-            add {
-                returnType = bubbleView.name
                 paramCount = 1
             }
         }
