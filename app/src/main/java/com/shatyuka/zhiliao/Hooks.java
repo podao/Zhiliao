@@ -24,6 +24,7 @@ import com.shatyuka.zhiliao.hooks.MineHybridView;
 import com.shatyuka.zhiliao.hooks.NavButton;
 import com.shatyuka.zhiliao.hooks.NavRes;
 import com.shatyuka.zhiliao.hooks.NextAnswer;
+import com.shatyuka.zhiliao.hooks.FullScreen;
 import com.shatyuka.zhiliao.hooks.PanelBubble;
 import com.shatyuka.zhiliao.hooks.RedDot;
 import com.shatyuka.zhiliao.hooks.SearchAd;
@@ -68,6 +69,7 @@ public class Hooks {
             new HotListFilter(),
             new AutoRefresh(),
             new PanelBubble(),
+            new FullScreen(),
     };
 
     public static void init(final ClassLoader classLoader) {
