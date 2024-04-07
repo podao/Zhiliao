@@ -332,4 +332,10 @@
             android:title="捐赠"
             android:summary="快揭不开锅了 ( ≧Д≦)"/>
     </PreferenceCategory>
+    <PreferenceCategory android:title="修改">
+        <Preference
+            android:key="preference_sourcecode_clouderhem"
+            android:title="Github"
+            android:summary="https://github.com/CLOUDERHEM/Zhiliao"/>
+    </PreferenceCategory>
 </PreferenceScreen>
