@@ -367,6 +367,8 @@ public class ZhihuPreference implements IHook {
                 Object switch_minehybrid = findPreference.invoke(thisObject, "switch_minehybrid");
                 Object switch_autorefresh = findPreference.invoke(thisObject, "switch_autorefresh");
                 Object switch_findnav = findPreference.invoke(thisObject, "switch_findnav");
+                Object switch_fullscreen = findPreference.invoke(thisObject, "switch_fullscreen");
+                Object preference_sourcecode_clouderhem = findPreference.invoke(thisObject, "preference_sourcecode_clouderhem");
 
                 setOnPreferenceChangeListener.invoke(findPreference.invoke(thisObject, "accept_eula"), thisObject);
                 setOnPreferenceClickListener.invoke(switch_externlink, thisObject);
@@ -396,6 +398,8 @@ public class ZhihuPreference implements IHook {
                 setOnPreferenceClickListener.invoke(switch_minehybrid, thisObject);
                 setOnPreferenceClickListener.invoke(switch_autorefresh, thisObject);
                 setOnPreferenceClickListener.invoke(switch_findnav, thisObject);
+                setOnPreferenceClickListener.invoke(switch_fullscreen, thisObject);
+                setOnPreferenceClickListener.invoke(preference_sourcecode_clouderhem, thisObject);
 
                 String loaded_version = Helper.modRes.getString(R.string.app_version);
                 setSummary.invoke(preference_version, loaded_version);
@@ -453,7 +457,7 @@ public class ZhihuPreference implements IHook {
                 setIcon.invoke(findPreference.invoke(thisObject, "switch_colormode"), Helper.modRes.getDrawable(R.drawable.ic_color));
                 setIcon.invoke(switch_tag, Helper.modRes.getDrawable(R.drawable.ic_label));
                 setIcon.invoke(findPreference.invoke(thisObject, "switch_statusbar"), Helper.modRes.getDrawable(R.drawable.ic_fullscreen));
-                setIcon.invoke(findPreference.invoke(thisObject, "switch_fullscreen"), Helper.modRes.getDrawable(R.drawable.ic_fullscreen_exit));
+                setIcon.invoke(switch_fullscreen, Helper.modRes.getDrawable(R.drawable.ic_fullscreen_exit));
                 setIcon.invoke(switch_thirdpartylogin, Helper.modRes.getDrawable(R.drawable.ic_login));
                 setIcon.invoke(switch_reddot, Helper.modRes.getDrawable(R.drawable.ic_mark_chat_unread));
                 setIcon.invoke(switch_vipbanner, Helper.modRes.getDrawable(R.drawable.ic_vip_banner));
@@ -487,6 +491,7 @@ public class ZhihuPreference implements IHook {
                 setIcon.invoke(switch_minehybrid, Helper.modRes.getDrawable(R.drawable.ic_viewcard));
                 setIcon.invoke(switch_autorefresh, Helper.modRes.getDrawable(R.drawable.ic_refresh));
                 setIcon.invoke(switch_findnav, Helper.modRes.getDrawable(R.drawable.ic_quadrilateralstar));
+                setIcon.invoke(preference_sourcecode_clouderhem, Helper.modRes.getDrawable(R.drawable.ic_github));
 
                 if (Helper.prefs.getBoolean("accept_eula", false)) {
                     Object category_eula = findPreference.invoke(thisObject, "category_eula");
@@ -580,8 +585,14 @@ public class ZhihuPreference implements IHook {
                     case "switch_feedtophot":
                     case "switch_minehybrid":
                     case "switch_findnav":
+                    case "switch_fullscreen":
                         Helper.toast("重启知乎生效", Toast.LENGTH_SHORT);
                         break;
+                    case "preference_sourcecode_clouderhem":
+                        ((Context) getContext.invoke(param.thisObject))
+                                .startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/CLOUDERHEM/Zhiliao")));
+                        break;
+
                 }
                 return false;
             }
