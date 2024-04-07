@@ -86,6 +86,15 @@ public class FeedAd implements IHook {
             }
         });
 
+        XposedBridge.hookAllMethods(Helper.MorphAdHelper, "resolveHotAdParam", new XC_MethodHook() {
+            @Override
+            protected void beforeHookedMethod(MethodHookParam param) {
+                if (Helper.prefs.getBoolean("switch_mainswitch", false) && Helper.prefs.getBoolean("switch_feedad", true)) {
+                    param.setResult(false);
+                }
+            }
+        });
+
         XposedBridge.hookAllMethods(Helper.MorphAdHelper, "resolve", new XC_MethodHook() {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) {
