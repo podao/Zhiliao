@@ -8,7 +8,7 @@ import java.lang.reflect.Method
 import java.util.Arrays
 import java.util.stream.Collectors
 
-class PanelBubble : IHook {
+class PanelBubble : BaseHook() {
 
     private lateinit var buildBubbleViewMethodList: List<Method>
 

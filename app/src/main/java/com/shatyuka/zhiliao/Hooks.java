@@ -79,7 +79,7 @@ public class Hooks {
                 hook.hook();
             } catch (Throwable e) {
                 Helper.toastIfUpdated(hook.getName() + "功能加载失败，可能不支持当前版本知乎: " + Helper.zhihuPackageInfo.versionName, Toast.LENGTH_LONG);
-                Helper.logD(Hooks.class.getSimpleName(), e);
+                Helper.logE(hook.getClass().getSimpleName(), e);
             }
         }
         afterHooksInit();

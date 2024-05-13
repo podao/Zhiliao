@@ -7,7 +7,7 @@ import de.robv.android.xposed.XposedBridge.hookAllMethods
 import java.lang.reflect.Field
 import java.util.Arrays
 
-class MineHybridView : IHook {
+class MineHybridView : BaseHook() {
 
     private lateinit var mineTabFragment: Class<*>
     private lateinit var mineHybridView: Class<*>

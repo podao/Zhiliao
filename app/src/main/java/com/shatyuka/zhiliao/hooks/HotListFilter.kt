@@ -13,7 +13,7 @@ import java.util.Optional
 import java.util.regex.Pattern
 import java.util.stream.Collectors
 
-class HotListFilter : IHook {
+class HotListFilter : BaseHook() {
 
     private lateinit var feedsHotListFragment2: Class<*>
     private lateinit var rankFeedList: Class<*>
@@ -88,7 +88,7 @@ class HotListFilter : IHook {
             templateCardModel_dataField = templateCardModel!!.getField("data")
             templateCardModel_dataField.isAccessible = true
         } catch (e: Exception) {
-            Helper.logD(this::class.simpleName, e)
+           logE(e)
         }
 
         headZone = rankFeedList.getDeclaredField("head_zone")
@@ -150,7 +150,7 @@ class HotListFilter : IHook {
                         || isAd(feed as Any)
                         || shouldFilterEveryoneSeeRankFeed(feed)
             } catch (e: Exception) {
-                Helper.logD(this::class.simpleName, e)
+                logE(e)
                 return@removeIf false
             }
         }
@@ -213,7 +213,7 @@ class HotListFilter : IHook {
                     Optional.ofNullable(linkArea_urlField[linkAreaInstance] as String).orElse("")
                 return !QUESTION_URL_PATTERN.matcher(url).find()
             } catch (e: Exception) {
-                Helper.logD(this::class.simpleName, e)
+                logE(e)
             }
         }
         return false

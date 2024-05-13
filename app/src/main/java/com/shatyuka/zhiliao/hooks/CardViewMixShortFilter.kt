@@ -11,7 +11,7 @@ import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 import java.util.Arrays
 
-class CardViewMixShortFilter : IHook {
+class CardViewMixShortFilter : BaseHook() {
 
     private lateinit var mixupDataParser_jsonNode2List: Method
 

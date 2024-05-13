@@ -357,13 +357,17 @@ public class Helper {
         }
     }
 
-    public static void logD(String tag, Throwable throwable) {
-        logD(tag, throwable.getMessage(), throwable);
+    public static void logE(String tag, Throwable throwable) {
+        logE(tag, throwable.getMessage(), throwable);
     }
 
-    public static void logD(String tag, String msg, Throwable throwable) {
-        XposedBridge.log(String.format("[Zhiliao][%s][D] %s", tag, msg));
+    public static void logE(String tag, String msg, Throwable throwable) {
+        logE(tag, msg);
         XposedBridge.log(throwable);
+    }
+
+    public static void logE(String tag, String msg) {
+        XposedBridge.log(String.format("[Zhiliao][%s][E] %s", tag, msg));
     }
 
     /**

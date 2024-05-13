@@ -3,8 +3,9 @@ package com.shatyuka.zhiliao.hooks
 import android.util.Pair
 import com.shatyuka.zhiliao.Helper
 import com.shatyuka.zhiliao.Helper.JsonNodeOp
+import com.shatyuka.zhiliao.Helper.logE
+
 import de.robv.android.xposed.XC_MethodHook
-import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedBridge.hookMethod
 import org.luckypray.dexkit.query.matchers.ClassMatcher
 import java.lang.reflect.InvocationTargetException
@@ -15,7 +16,7 @@ import java.util.Optional
 /**
  * 卡片视图(FeatureUI)
  */
-class CardViewFeatureShortFilter : IHook {
+class CardViewFeatureShortFilter : BaseHook() {
 
     private lateinit var mixupDataParser_jsonNode2Object: Method
     private lateinit var mixupDataParser_jsonNode2List: Method
@@ -181,8 +182,8 @@ class CardViewFeatureShortFilter : IHook {
             }
         }
 
-        private fun logE(e: Exception) {
-            Helper.logD(CardViewFeatureShortFilter::class.simpleName, e)
+        fun logE(e: Exception) {
+            logE(CardViewFeatureShortFilter::class.simpleName, e)
         }
     }
 }

@@ -7,7 +7,7 @@ import de.robv.android.xposed.XposedBridge.hookAllMethods
 import de.robv.android.xposed.XposedBridge.hookMethod
 import java.lang.reflect.Method
 
-class VIPBanner : IHook {
+class VIPBanner : BaseHook() {
 
     private var handleVipData: Method? = null
     private var moreVipData: Class<*>? = null
@@ -25,7 +25,7 @@ class VIPBanner : IHook {
                 classLoader.loadClass("com.zhihu.android.profile.data.model.MoreVipData")
             }
         } catch (e: Exception) {
-            Helper.logD(this::class.simpleName, e)
+            logE(e)
         }
 
         try {
@@ -33,7 +33,7 @@ class VIPBanner : IHook {
                 classLoader.loadClass("com.zhihu.android.app.ui.fragment.more.mine.MineTabFragment")
             handleVipData = Helper.getMethodByParameterTypes(mineTabFragment, moreVipData)
         } catch (e: Exception) {
-            Helper.logD(this::class.simpleName, e)
+            logE(e)
         }
     }
 

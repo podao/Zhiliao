@@ -8,7 +8,7 @@ import java.lang.reflect.Field
 import java.lang.reflect.Method
 import java.util.Arrays
 
-class NavButton : IHook {
+class NavButton : BaseHook() {
 
     private lateinit var bottomNavMenuView: Class<*>
     private lateinit var iMenuItem: Class<*>

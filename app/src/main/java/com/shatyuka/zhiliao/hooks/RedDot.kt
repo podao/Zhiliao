@@ -13,7 +13,7 @@ import de.robv.android.xposed.XposedHelpers
 import de.robv.android.xposed.XposedHelpers.findAndHookConstructor
 import java.lang.reflect.Method
 
-class RedDot : IHook {
+class RedDot : BaseHook() {
 
     private var FeedsTabsFragment: Class<*>? = null
     private var NotiMsgModel: Class<*>? = null
@@ -199,9 +199,5 @@ class RedDot : IHook {
                 logE(NoSuchMethodException("no CustomTabView#void(String)"))
             }
         }
-    }
-
-    private fun logE(e: Exception) {
-        Helper.logD(this::class.simpleName, e)
     }
 }

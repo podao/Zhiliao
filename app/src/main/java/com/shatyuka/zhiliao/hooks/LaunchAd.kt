@@ -8,7 +8,7 @@ import org.luckypray.dexkit.query.matchers.ClassMatcher
 import org.luckypray.dexkit.query.matchers.MethodMatcher
 import java.lang.reflect.Method
 
-class LaunchAd : IHook {
+class LaunchAd : BaseHook() {
 
     private var chooseAdUrl: Method? = null
     private var isShowLaunchAd: Method? = null
@@ -85,10 +85,7 @@ class LaunchAd : IHook {
             classLoader
         )
         if (adNetworkManager == null) {
-            Helper.logD(
-                this::class.simpleName,
-                ClassNotFoundException("com.zhihu.android.sdk.launchad.AdNetworkManager")
-            )
+            logE("no class: com.zhihu.android.sdk.launchad.AdNetworkManager")
             return null
         }
         val chooseUrl = Helper.getMethodByParameterTypes(
@@ -98,10 +95,7 @@ class LaunchAd : IHook {
             String::class.java
         )
         if (chooseUrl == null) {
-            Helper.logD(
-                this::class.simpleName,
-                NoSuchMethodException("com.zhihu.android.sdk.launchad.AdNetworkManager#chooseUrl")
-            )
+            logE("no method: com.zhihu.android.sdk.launchad.AdNetworkManager#chooseUrl")
         }
         return chooseUrl
     }
@@ -126,7 +120,7 @@ class LaunchAd : IHook {
             classLoader
         )
         if (methodList.isEmpty() || methodList.size > 1) {
-            logE(NoSuchMethodException("no AdSpecialDataProvider#resolveAdvert or multi"))
+            logE("no AdSpecialDataProvider#resolveAdvert or multi")
             return null
         }
         return methodList[0]
@@ -158,7 +152,7 @@ class LaunchAd : IHook {
             classLoader
         )
         if (launchAdHelper == null) {
-            logE(ClassNotFoundException("no class LaunchAdHelper or multi"))
+            logE("no class LaunchAdHelper or multi")
             return null
         }
         return try {
@@ -167,10 +161,6 @@ class LaunchAd : IHook {
             logE(e)
             null
         }
-    }
-
-    private fun logE(e: Exception) {
-        Helper.logD(this::class.simpleName, e)
     }
 
 }

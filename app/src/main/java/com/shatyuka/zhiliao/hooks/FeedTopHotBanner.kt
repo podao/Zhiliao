@@ -4,7 +4,7 @@ import com.shatyuka.zhiliao.Helper
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge.hookAllMethods
 
-class FeedTopHotBanner : IHook {
+class FeedTopHotBanner : BaseHook() {
 
     private lateinit var feedTopHot: Class<*>
     private lateinit var templateHeaderHolder: Class<*>

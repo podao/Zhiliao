@@ -9,7 +9,7 @@ import java.lang.reflect.Method
 import java.lang.reflect.Modifier
 import java.util.Arrays
 
-class AutoRefresh : IHook {
+class AutoRefresh : BaseHook() {
 
     private var feedAutoRefreshManager_shouldRefresh: Method? = null
     private var feedHotRefreshAbConfig_shouldRefresh: Method? = null
@@ -78,11 +78,11 @@ class AutoRefresh : IHook {
             classLoader
         )
         if (methodList.isEmpty()) {
-            logE(NoSuchMethodException("com.zhihu.android.app.feed.util.FeedHotRefreshAbConfig#shouldRefresh"))
+            logE("no method: com.zhihu.android.app.feed.util.FeedHotRefreshAbConfig#shouldRefresh")
             return null
         }
         if (methodList.size > 1) {
-            logE(IllegalStateException("multi methods have bool(long)"))
+            logE("multi methods have bool(long)")
             return null
         }
 
@@ -102,19 +102,15 @@ class AutoRefresh : IHook {
             classLoader
         )
         if (methodList.isEmpty()) {
-            logE(NoSuchMethodException("com.zhihu.android.app.feed.util.FeedAutoRefreshManager#shouldRefresh"))
+            logE("no method: com.zhihu.android.app.feed.util.FeedAutoRefreshManager#shouldRefresh")
             return null
         }
         if (methodList.size > 1) {
-            logE(IllegalStateException("multi methods have void(long,int,object,object)"))
+            logE("multi methods have void(long,int,object,object)")
             return null
         }
 
         return methodList[0]
-    }
-
-    private fun logE(e: Exception) {
-        Helper.logD(this::class.simpleName, e)
     }
 
 }

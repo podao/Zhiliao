@@ -12,7 +12,7 @@ import java.lang.reflect.Field
  * 卡片视图去除关注按钮
  * todo: 整合web去除关注
  */
-class FollowButton : IHook {
+class FollowButton : BaseHook() {
 
     private var bottomReactionView: Class<*>? = null
     private lateinit var followWithAvatarView: Class<*>
@@ -36,7 +36,7 @@ class FollowButton : IHook {
             followWithAvatarViewField =
                 Helper.findFieldByType(bottomReactionView, followWithAvatarView)
         } catch (e: Exception) {
-            Helper.logD(this::class.simpleName, e)
+            logE(e)
         }
 
         try {
@@ -46,7 +46,7 @@ class FollowButton : IHook {
                 classLoader.loadClass("com.zhihu.android.unify_interactive.view.follow.FollowPeopleButton")
             followPeopleButtonField = Helper.findFieldByType(zHAuthorInfoView, followPeopleButton)
         } catch (e: Exception) {
-            Helper.logD(this::class.simpleName, e)
+            logE(e)
         }
     }
 

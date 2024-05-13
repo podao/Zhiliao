@@ -10,7 +10,7 @@ import de.robv.android.xposed.XposedBridge.hookAllMethods
 import java.lang.reflect.Field
 
 
-class FollowButtonFeatureUI : IHook {
+class FollowButtonFeatureUI : BaseHook() {
 
     private lateinit var followWithAvatarView: Class<*>
     private var bottomReactionViewImpl: Class<*>? = null
@@ -34,7 +34,7 @@ class FollowButtonFeatureUI : IHook {
             followWithAvatarViewFromImplField =
                 Helper.findFieldByType(bottomReactionViewImpl, followWithAvatarView)
         } catch (e: Exception) {
-            Helper.logD(this::class.simpleName, e)
+            logE(e)
         }
 
         try {
@@ -45,14 +45,14 @@ class FollowButtonFeatureUI : IHook {
             followPeopleButtonField =
                 Helper.findFieldByType(followButtonViewImpl, followPeopleButton)
         } catch (e: Exception) {
-            Helper.logD(this::class.simpleName, e)
+            logE(e)
         }
 
         try {
             followModelKt =
                 classLoader.loadClass("com.zhihu.android.unify_interactive.model.follow.FollowModelKt")
         } catch (e: Exception) {
-            Helper.logD(this::class.simpleName, e)
+            logE(e.message)
         }
     }
 

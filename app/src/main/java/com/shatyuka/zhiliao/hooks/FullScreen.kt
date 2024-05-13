@@ -10,7 +10,7 @@ import de.robv.android.xposed.XposedBridge.hookMethod
 import org.luckypray.dexkit.query.matchers.ClassMatcher
 import java.lang.reflect.Method
 
-class FullScreen : IHook {
+class FullScreen : BaseHook() {
 
     private var setHandler: Method? = null
 
@@ -31,10 +31,7 @@ class FullScreen : IHook {
         }
 
         if (setHandler == null) {
-            Helper.logD(
-                this::class.simpleName,
-                NoSuchMethodException("ClearScreenHelper#setHandler")
-            )
+            logE("no method: ClearScreenHelper#setHandler")
         }
     }
 
@@ -68,10 +65,7 @@ class FullScreen : IHook {
         )
 
         if (clearScreenHelper == null) {
-            Helper.logD(
-                this::class.simpleName,
-                ClassNotFoundException("com.zhihu.android.feature.short_container_feature.ui.widget.toolbar.clearscreen.ClearScreenHelper")
-            )
+            logE("no class: com.zhihu.android.feature.short_container_feature.ui.widget.toolbar.clearscreen.ClearScreenHelper")
         }
 
         return clearScreenHelper
