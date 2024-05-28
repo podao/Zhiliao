@@ -2,6 +2,7 @@ package com.shatyuka.zhiliao;
 
 import android.widget.Toast;
 
+import com.shatyuka.zhiliao.hooks.ActivityInfoAd;
 import com.shatyuka.zhiliao.hooks.AnswerAd;
 import com.shatyuka.zhiliao.hooks.AnswerListAd;
 import com.shatyuka.zhiliao.hooks.Article;
@@ -16,6 +17,7 @@ import com.shatyuka.zhiliao.hooks.FeedAd;
 import com.shatyuka.zhiliao.hooks.FeedTopHotBanner;
 import com.shatyuka.zhiliao.hooks.FollowButton;
 import com.shatyuka.zhiliao.hooks.FollowButtonFeatureUI;
+import com.shatyuka.zhiliao.hooks.FullScreen;
 import com.shatyuka.zhiliao.hooks.HotBanner;
 import com.shatyuka.zhiliao.hooks.HotListFilter;
 import com.shatyuka.zhiliao.hooks.IHook;
@@ -24,7 +26,6 @@ import com.shatyuka.zhiliao.hooks.MineHybridView;
 import com.shatyuka.zhiliao.hooks.NavButton;
 import com.shatyuka.zhiliao.hooks.NavRes;
 import com.shatyuka.zhiliao.hooks.NextAnswer;
-import com.shatyuka.zhiliao.hooks.FullScreen;
 import com.shatyuka.zhiliao.hooks.PanelBubble;
 import com.shatyuka.zhiliao.hooks.RedDot;
 import com.shatyuka.zhiliao.hooks.SearchAd;
@@ -70,6 +71,7 @@ public class Hooks {
             new AutoRefresh(),
             new PanelBubble(),
             new FullScreen(),
+            new ActivityInfoAd(),
     };
 
     public static void init(final ClassLoader classLoader) {

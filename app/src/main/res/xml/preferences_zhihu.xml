@@ -57,6 +57,12 @@
             android:key="switch_searchad"
             android:title="去搜索推荐"
             android:summary="去除「大家都在搜」与推广"/>
+        <com.zhihu.android.app.ui.widget.SwitchPreference
+            android:defaultValue="true"
+            android:dependency="switch_mainswitch"
+            android:key="switch_activityinfoad"
+            android:title="去首页顶部广告"
+            android:summary="去首页顶部Tab活动广告"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="其他" android:key="category_misc">
         <com.zhihu.android.app.ui.widget.SwitchPreference
