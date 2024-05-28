@@ -3,6 +3,7 @@ package com.shatyuka.zhiliao.hooks
 import com.shatyuka.zhiliao.Helper
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge.hookMethod
+import de.robv.android.xposed.XposedHelpers
 import java.io.Reader
 import java.lang.reflect.Method
 import java.util.function.Function
@@ -24,10 +25,9 @@ class SearchAd : BaseHook() {
         try {
             val searchTopTabsItemList =
                 classLoader.loadClass("com.zhihu.android.api.model.SearchTopTabsItemList")
-            val commercialData = searchTopTabsItemList.getField("commercialData")
 
             processors.put(searchTopTabsItemList) {
-                commercialData.set(it, null)
+                XposedHelpers.setObjectField(it, "commercialData", null)
             }
         } catch (e: Exception) {
             logE("SearchTopTabsItemList.commercialData ${e.message}")
@@ -50,9 +50,9 @@ class SearchAd : BaseHook() {
 
         try {
             val presetWords = classLoader.loadClass("com.zhihu.android.api.model.PresetWords")
-            val preset = presetWords.getField("preset")
+
             processors.put(presetWords) {
-                preset.set(it, null)
+                XposedHelpers.setObjectField(it, "preset", null)
             }
         } catch (e: Exception) {
             logE("PresetWords.preset ${e.message}")
@@ -61,9 +61,9 @@ class SearchAd : BaseHook() {
         try {
             val presetWords =
                 classLoader.loadClass("com.zhihu.android.service.search_service.model.PresetWords")
-            val preset = presetWords.getField("preset")
+
             processors.put(presetWords) {
-                preset.set(it, null)
+                XposedHelpers.setObjectField(it, "preset", null)
             }
         } catch (e: Exception) {
             logE("PresetWords2.preset ${e.message}")
@@ -72,9 +72,9 @@ class SearchAd : BaseHook() {
         try {
             val hotSearchBeanClass =
                 classLoader.loadClass("com.zhihu.android.api.model.HotSearchBean")
-            val searchHotList = hotSearchBeanClass.getField("searchHotList")
+
             processors.put(hotSearchBeanClass) {
-                searchHotList.set(it, ArrayList<Any>())
+                XposedHelpers.setObjectField(it, "searchHotList", ArrayList<Any>())
             }
         } catch (e: Exception) {
             logE("HotSearchBean.searchHotList ${e.message}")
@@ -90,9 +90,16 @@ class SearchAd : BaseHook() {
 
         hookMethod(readObject, object : XC_MethodHook() {
             override fun afterHookedMethod(param: MethodHookParam) {
-                if (param.result != null) {
-                    // logE("resultClass: ${param.result.javaClass}")
-                    processors[param.result.javaClass]?.apply(param.result)
+                if (param.result == null) {
+                    return
+                }
+                val processor = processors[param.result.javaClass]
+                if (processor != null) {
+                    try {
+                        processor.apply(param.result)
+                    } catch (e: Exception) {
+                        logE("can not apply process, resultClass:${param.result.javaClass}, error:$e")
+                    }
                 }
             }
         })
