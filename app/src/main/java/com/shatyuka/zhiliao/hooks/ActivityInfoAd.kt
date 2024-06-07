@@ -7,11 +7,15 @@ import de.robv.android.xposed.XposedHelpers
 import java.io.Reader
 import java.lang.reflect.Method
 
+/**
+ * api: /root/tab
+ */
 class ActivityInfoAd : BaseHook() {
 
     private lateinit var readObject: Method
 
-    private lateinit var activityInfo: Class<*>
+    private var activityInfo: Class<*>? = null
+    private var topTabs: Class<*>? = null
 
     override fun getName(): String {
         return "去除首页顶部Tab活动广告"
@@ -19,7 +23,17 @@ class ActivityInfoAd : BaseHook() {
 
     override fun init(classLoader: ClassLoader) {
         readObject = findReadObjectMethod(classLoader)
-        activityInfo = classLoader.loadClass("com.zhihu.android.api.model.ActivityInfo")
+        try {
+            activityInfo = classLoader.loadClass("com.zhihu.android.api.model.ActivityInfo")
+        } catch (e: Exception) {
+            logE(e.message)
+        }
+
+        try {
+            topTabs = classLoader.loadClass("com.zhihu.android.api.model.TopTabs")
+        } catch (e: Exception) {
+            logE(e.message)
+        }
     }
 
     override fun hook() {
@@ -31,7 +45,9 @@ class ActivityInfoAd : BaseHook() {
 
         hookMethod(readObject, object : XC_MethodHook() {
             override fun afterHookedMethod(param: MethodHookParam) {
-                if (param.result != null && param.result.javaClass == activityInfo) {
+                if (param.result != null
+                    && (param.result.javaClass == activityInfo || param.result.javaClass == topTabs)
+                ) {
                     postProcessActivityInfo(param.result)
                 }
             }
