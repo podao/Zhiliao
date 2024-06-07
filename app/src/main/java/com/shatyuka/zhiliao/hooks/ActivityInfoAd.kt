@@ -4,15 +4,11 @@ import com.shatyuka.zhiliao.Helper
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge.hookMethod
 import de.robv.android.xposed.XposedHelpers
-import java.io.Reader
-import java.lang.reflect.Method
 
 /**
  * api: /root/tab
  */
 class ActivityInfoAd : BaseHook() {
-
-    private lateinit var readObject: Method
 
     private var activityInfo: Class<*>? = null
     private var topTabs: Class<*>? = null
@@ -22,7 +18,6 @@ class ActivityInfoAd : BaseHook() {
     }
 
     override fun init(classLoader: ClassLoader) {
-        readObject = findReadObjectMethod(classLoader)
         try {
             activityInfo = classLoader.loadClass("com.zhihu.android.api.model.ActivityInfo")
         } catch (e: Exception) {
@@ -43,7 +38,7 @@ class ActivityInfoAd : BaseHook() {
             return
         }
 
-        hookMethod(readObject, object : XC_MethodHook() {
+        hookMethod(Helper.JacksonHelper.ObjectReader_readValue, object : XC_MethodHook() {
             override fun afterHookedMethod(param: MethodHookParam) {
                 if (param.result != null
                     && (param.result.javaClass == activityInfo || param.result.javaClass == topTabs)
@@ -56,14 +51,5 @@ class ActivityInfoAd : BaseHook() {
 
     private fun postProcessActivityInfo(activityInfo: Any) {
         XposedHelpers.setObjectField(activityInfo, "topActivity", null)
-    }
-
-    private fun findReadObjectMethod(classloader: ClassLoader): Method {
-        return classloader.loadClass("com.fasterxml.jackson.databind.ObjectReader").declaredMethods
-            .filter {
-                it.parameterCount == 1 && it.parameterTypes[0] == Reader::class.java
-            }.filter {
-                it.returnType == Object::class.java
-            }[0]
     }
 }

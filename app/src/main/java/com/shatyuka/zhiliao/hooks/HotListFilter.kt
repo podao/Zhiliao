@@ -1,7 +1,7 @@
 package com.shatyuka.zhiliao.hooks
 
 import com.shatyuka.zhiliao.Helper
-import com.shatyuka.zhiliao.Helper.JsonNodeOp
+import com.shatyuka.zhiliao.Helper.JacksonHelper
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge
 import de.robv.android.xposed.XposedBridge.hookAllMethods
@@ -166,10 +166,10 @@ class HotListFilter : BaseHook() {
             return false
         }
         val data = templateCardModel_dataField[rankFeedInstance]
-        val target = JsonNodeOp.JsonNode_get.invoke(data, "target")
+        val target = JacksonHelper.JsonNode_get.invoke(data, "target")
         if (Helper.regex_title != null) {
-            val title = JsonNodeOp.JsonNode_get.invoke(
-                JsonNodeOp.JsonNode_get.invoke(target, "title_area"),
+            val title = JacksonHelper.JsonNode_get.invoke(
+                JacksonHelper.JsonNode_get.invoke(target, "title_area"),
                 "text"
             )?.toString()
             if (Helper.regex_title.matcher(title as CharSequence).find()) {
@@ -177,8 +177,8 @@ class HotListFilter : BaseHook() {
             }
         }
         if (Helper.regex_author != null) {
-            val author = JsonNodeOp.JsonNode_get.invoke(
-                JsonNodeOp.JsonNode_get.invoke(
+            val author = JacksonHelper.JsonNode_get.invoke(
+                JacksonHelper.JsonNode_get.invoke(
                     target,
                     "author_area"
                 ), "name"
@@ -190,8 +190,8 @@ class HotListFilter : BaseHook() {
         if (Helper.regex_content != null) {
             // not full content
             if (Helper.regex_content.matcher(
-                    JsonNodeOp.JsonNode_get.invoke(
-                        JsonNodeOp.JsonNode_get.invoke(
+                    JacksonHelper.JsonNode_get.invoke(
+                        JacksonHelper.JsonNode_get.invoke(
                             target,
                             "excerpt_area"
                         ), "text"

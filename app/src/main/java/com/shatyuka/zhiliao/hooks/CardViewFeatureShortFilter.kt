@@ -2,7 +2,7 @@ package com.shatyuka.zhiliao.hooks
 
 import android.util.Pair
 import com.shatyuka.zhiliao.Helper
-import com.shatyuka.zhiliao.Helper.JsonNodeOp
+import com.shatyuka.zhiliao.Helper.JacksonHelper
 import com.shatyuka.zhiliao.Helper.logE
 
 import de.robv.android.xposed.XC_MethodHook
@@ -56,12 +56,12 @@ class CardViewFeatureShortFilter : BaseHook() {
 
     @Throws(InvocationTargetException::class, IllegalAccessException::class)
     private fun filterShortContent(shortContentListJsonNode: Any) {
-        val dataJsonNode = JsonNodeOp.JsonNode_get.invoke(shortContentListJsonNode, "data")
-        if (dataJsonNode == null || !(JsonNodeOp.JsonNode_isArray.invoke(dataJsonNode) as Boolean)) {
+        val dataJsonNode = JacksonHelper.JsonNode_get.invoke(shortContentListJsonNode, "data")
+        if (dataJsonNode == null || !(JacksonHelper.JsonNode_isArray.invoke(dataJsonNode) as Boolean)) {
             return
         }
         val shortContentIterator =
-            JsonNodeOp.JsonNode_iterator.invoke(dataJsonNode) as MutableIterator<*>
+            JacksonHelper.JsonNode_iterator.invoke(dataJsonNode) as MutableIterator<*>
 
         while (shortContentIterator.hasNext()) {
             val shortContentJsonNode = shortContentIterator.next() ?: continue
@@ -76,12 +76,12 @@ class CardViewFeatureShortFilter : BaseHook() {
             add {
                 returnType = Object::class.java.name
                 paramCount = 1
-                paramTypes(JsonNodeOp.JsonNode)
+                paramTypes(JacksonHelper.JsonNode)
             }
             add {
                 returnType = List::class.java.name
                 paramCount = 1
-                paramTypes(JsonNodeOp.JsonNode)
+                paramTypes(JacksonHelper.JsonNode)
             }
         }
 
@@ -103,7 +103,7 @@ class CardViewFeatureShortFilter : BaseHook() {
         return Arrays.stream(mixupDataParser.getDeclaredMethods())
             .filter { method: Method -> method.returnType == Object::class.java }
             .filter { method: Method -> method.parameterCount == 1 }
-            .filter { method: Method -> method.getParameterTypes()[0] == JsonNodeOp.JsonNode }
+            .filter { method: Method -> method.getParameterTypes()[0] == JacksonHelper.JsonNode }
             .findFirst()
     }
 
@@ -111,7 +111,7 @@ class CardViewFeatureShortFilter : BaseHook() {
         return Arrays.stream(mixupDataParser.getDeclaredMethods())
             .filter { method: Method -> method.returnType == List::class.java }
             .filter { method: Method -> method.parameterCount == 1 }
-            .filter { method: Method -> method.getParameterTypes()[0] == JsonNodeOp.JsonNode }
+            .filter { method: Method -> method.getParameterTypes()[0] == JacksonHelper.JsonNode }
             .findFirst()
     }
 
@@ -128,12 +128,12 @@ class CardViewFeatureShortFilter : BaseHook() {
 
         @Throws(InvocationTargetException::class, IllegalAccessException::class)
         private fun isAd(shortContentJsonNode: Any): Boolean {
-            if (JsonNodeOp.JsonNode_get.invoke(shortContentJsonNode, "adjson") != null) {
+            if (JacksonHelper.JsonNode_get.invoke(shortContentJsonNode, "adjson") != null) {
                 return true
             }
             val adInfo =
-                JsonNodeOp.JsonNode_get.invoke(shortContentJsonNode, "ad_info") ?: return false
-            val adInfoData = JsonNodeOp.JsonNode_get.invoke(adInfo, "data")
+                JacksonHelper.JsonNode_get.invoke(shortContentJsonNode, "ad_info") ?: return false
+            val adInfoData = JacksonHelper.JsonNode_get.invoke(adInfo, "data")
             return if (adInfoData != null) {
                 // "" , "{}"
                 adInfoData.toString().length > 4
@@ -145,35 +145,35 @@ class CardViewFeatureShortFilter : BaseHook() {
          */
         @Throws(InvocationTargetException::class, IllegalAccessException::class)
         private fun hasMoreType(shortContentJsonNode: Any): Boolean {
-            val bizTypeList = JsonNodeOp.JsonNode_get.invoke(shortContentJsonNode, "biz_type_list")
-            return JsonNodeOp.JsonNode_size.invoke(bizTypeList) as Int > 1
+            val bizTypeList = JacksonHelper.JsonNode_get.invoke(shortContentJsonNode, "biz_type_list")
+            return JacksonHelper.JsonNode_size.invoke(bizTypeList) as Int > 1
         }
 
         @JvmStatic
         fun preProcessShortContent(shortContentJsonNode: Any?) {
             try {
                 val searchWordJsonNode =
-                    JsonNodeOp.JsonNode_get.invoke(shortContentJsonNode, "search_word")
+                    JacksonHelper.JsonNode_get.invoke(shortContentJsonNode, "search_word")
                 if (searchWordJsonNode != null) {
-                    JsonNodeOp.ObjectNode_put.invoke(searchWordJsonNode, "queries", null)
+                    JacksonHelper.ObjectNode_put.invoke(searchWordJsonNode, "queries", null)
                 }
             } catch (e: Exception) {
                 logE(e)
             }
             try {
-                JsonNodeOp.ObjectNode_put.invoke(shortContentJsonNode, "relationship_tips", null)
+                JacksonHelper.ObjectNode_put.invoke(shortContentJsonNode, "relationship_tips", null)
             } catch (e: Exception) {
                 logE(e)
             }
             if (Helper.prefs.getBoolean("switch_related", false)) {
                 try {
                     val thirdBusiness =
-                        JsonNodeOp.JsonNode_get.invoke(shortContentJsonNode, "third_business")
+                        JacksonHelper.JsonNode_get.invoke(shortContentJsonNode, "third_business")
                     if (thirdBusiness != null) {
                         val relatedQueries =
-                            JsonNodeOp.JsonNode_get.invoke(thirdBusiness, "related_queries")
+                            JacksonHelper.JsonNode_get.invoke(thirdBusiness, "related_queries")
                         if (relatedQueries != null) {
-                            JsonNodeOp.ObjectNode_put.invoke(relatedQueries, "queries", null)
+                            JacksonHelper.ObjectNode_put.invoke(relatedQueries, "queries", null)
                         }
                     }
                 } catch (e: Exception) {

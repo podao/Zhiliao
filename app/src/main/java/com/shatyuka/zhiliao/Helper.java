@@ -21,6 +21,7 @@ import org.luckypray.dexkit.query.matchers.MethodMatcher;
 import org.luckypray.dexkit.result.ClassDataList;
 
 import java.io.File;
+import java.io.Reader;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.security.MessageDigest;
@@ -66,7 +67,7 @@ public class Helper {
     static boolean init(ClassLoader classLoader) {
         try {
             init_class(classLoader);
-            JsonNodeOp.init(classLoader);
+            JacksonHelper.init(classLoader);
 
             prefs = context.getSharedPreferences("zhiliao_preferences", Context.MODE_PRIVATE);
             zhihuPackageInfo = context.getPackageManager().getPackageInfo("com.zhihu.android", 0);
@@ -371,9 +372,9 @@ public class Helper {
     }
 
     /**
-     * JsonNode ObjectNode
+     * Jackson operations
      */
-    public static class JsonNodeOp {
+    public static class JacksonHelper {
         public static Class<?> ObjectNode;
 
         public static Method ObjectNode_put;
@@ -388,6 +389,8 @@ public class Helper {
 
         public static Method JsonNode_iterator;
 
+        public static Method ObjectReader_readValue;
+
         public static void init(ClassLoader classLoader) throws Exception {
             JsonNode = classLoader.loadClass("com.fasterxml.jackson.databind.JsonNode");
             JsonNode_get = JsonNode.getDeclaredMethod("get", String.class);
@@ -397,6 +400,14 @@ public class Helper {
 
             ObjectNode = classLoader.loadClass("com.fasterxml.jackson.databind.node.ObjectNode");
             ObjectNode_put = ObjectNode.getDeclaredMethod("put", String.class, JsonNode);
+
+            ObjectReader_readValue = findReadValueMethod(classLoader);
+        }
+
+        private static Method findReadValueMethod(ClassLoader classLoader) throws ClassNotFoundException {
+            return Arrays.stream(classLoader.loadClass("com.fasterxml.jackson.databind.ObjectReader").getDeclaredMethods())
+                    .filter(method -> method.getParameterCount() == 1 && method.getParameterTypes()[0] == Reader.class)
+                    .filter(method -> method.getReturnType() == Object.class).findFirst().get();
         }
     }
 

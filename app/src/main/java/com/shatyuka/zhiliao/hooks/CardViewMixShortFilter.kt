@@ -1,7 +1,7 @@
 package com.shatyuka.zhiliao.hooks
 
 import com.shatyuka.zhiliao.Helper
-import com.shatyuka.zhiliao.Helper.JsonNodeOp
+import com.shatyuka.zhiliao.Helper.JacksonHelper
 import com.shatyuka.zhiliao.hooks.CardViewFeatureShortFilter.Companion.preProcessShortContent
 import com.shatyuka.zhiliao.hooks.CardViewFeatureShortFilter.Companion.shouldRemoveShortContent
 import de.robv.android.xposed.XC_MethodHook
@@ -42,12 +42,12 @@ class CardViewMixShortFilter : BaseHook() {
 
     @Throws(InvocationTargetException::class, IllegalAccessException::class)
     fun filterShortContent(shortContentListJsonNode: Any?) {
-        val dataJsonNode = JsonNodeOp.JsonNode_get.invoke(shortContentListJsonNode, "data")
-        if (dataJsonNode == null || !(JsonNodeOp.JsonNode_isArray.invoke(dataJsonNode) as Boolean)) {
+        val dataJsonNode = JacksonHelper.JsonNode_get.invoke(shortContentListJsonNode, "data")
+        if (dataJsonNode == null || !(JacksonHelper.JsonNode_isArray.invoke(dataJsonNode) as Boolean)) {
             return
         }
         val shortContentIterator =
-            JsonNodeOp.JsonNode_iterator.invoke(dataJsonNode) as MutableIterator<*>
+            JacksonHelper.JsonNode_iterator.invoke(dataJsonNode) as MutableIterator<*>
         while (shortContentIterator.hasNext()) {
             val shortContentJsonNode = shortContentIterator.next() ?: continue
             if (shouldRemoveShortContent(shortContentJsonNode)) {
@@ -69,7 +69,7 @@ class CardViewMixShortFilter : BaseHook() {
                 add {
                     paramCount = 1
                     returnType(List::class.java)
-                    paramTypes(JsonNodeOp.JsonNode)
+                    paramTypes(JacksonHelper.JsonNode)
                     usingStrings("")
                 }
                 count(4..6)
@@ -94,7 +94,7 @@ class CardViewMixShortFilter : BaseHook() {
             .filter { method: Method -> method.returnType == List::class.java }
             .filter { method: Method -> method.parameterCount == 1 }
             .filter { method: Method ->
-                method.getParameterTypes()[0] == JsonNodeOp.JsonNode
+                method.getParameterTypes()[0] == JacksonHelper.JsonNode
             }
             .findFirst().get()
     }
