@@ -2,7 +2,6 @@ package com.shatyuka.zhiliao;
 
 import android.widget.Toast;
 
-import com.shatyuka.zhiliao.hooks.ActivityInfoAd;
 import com.shatyuka.zhiliao.hooks.AnswerAd;
 import com.shatyuka.zhiliao.hooks.AnswerListAd;
 import com.shatyuka.zhiliao.hooks.Article;
@@ -33,6 +32,7 @@ import com.shatyuka.zhiliao.hooks.ShareAd;
 import com.shatyuka.zhiliao.hooks.StatusBar;
 import com.shatyuka.zhiliao.hooks.Tag;
 import com.shatyuka.zhiliao.hooks.ThirdPartyLogin;
+import com.shatyuka.zhiliao.hooks.TopTabs;
 import com.shatyuka.zhiliao.hooks.VIPBanner;
 import com.shatyuka.zhiliao.hooks.WebView;
 import com.shatyuka.zhiliao.hooks.ZhihuPreference;
@@ -71,7 +71,7 @@ public class Hooks {
             new AutoRefresh(),
             new PanelBubble(),
             new FullScreen(),
-            new ActivityInfoAd(),
+            new TopTabs()
     };
 
     public static void init(final ClassLoader classLoader) {

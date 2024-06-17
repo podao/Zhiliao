@@ -368,7 +368,6 @@ public class ZhihuPreference implements IHook {
                 Object switch_autorefresh = findPreference.invoke(thisObject, "switch_autorefresh");
                 Object switch_findnav = findPreference.invoke(thisObject, "switch_findnav");
                 Object switch_fullscreen = findPreference.invoke(thisObject, "switch_fullscreen");
-                Object switch_activityinfoad = findPreference.invoke(thisObject, "switch_activityinfoad");
                 Object preference_sourcecode_clouderhem = findPreference.invoke(thisObject, "preference_sourcecode_clouderhem");
 
                 setOnPreferenceChangeListener.invoke(findPreference.invoke(thisObject, "accept_eula"), thisObject);
@@ -401,7 +400,6 @@ public class ZhihuPreference implements IHook {
                 setOnPreferenceClickListener.invoke(switch_findnav, thisObject);
                 setOnPreferenceClickListener.invoke(switch_fullscreen, thisObject);
                 setOnPreferenceClickListener.invoke(preference_sourcecode_clouderhem, thisObject);
-                setOnPreferenceClickListener.invoke(switch_activityinfoad, thisObject);
 
                 String loaded_version = Helper.modRes.getString(R.string.app_version);
                 setSummary.invoke(preference_version, loaded_version);
@@ -475,6 +473,7 @@ public class ZhihuPreference implements IHook {
                 setIcon.invoke(findPreference.invoke(thisObject, "edit_title"), Helper.regex_title != null ? Helper.modRes.getDrawable(R.drawable.ic_check) : Helper.modRes.getDrawable(R.drawable.ic_close));
                 setIcon.invoke(findPreference.invoke(thisObject, "edit_author"), Helper.regex_author != null ? Helper.modRes.getDrawable(R.drawable.ic_check) : Helper.modRes.getDrawable(R.drawable.ic_close));
                 setIcon.invoke(findPreference.invoke(thisObject, "edit_content"), Helper.regex_content != null ? Helper.modRes.getDrawable(R.drawable.ic_check) : Helper.modRes.getDrawable(R.drawable.ic_close));
+                setIcon.invoke(findPreference.invoke(thisObject, "edit_tabs"), Helper.modRes.getDrawable(R.drawable.ic_tab));
                 setIcon.invoke(findPreference.invoke(thisObject, "switch_webview_debug"), Helper.modRes.getDrawable(R.drawable.ic_code));
                 setIcon.invoke(findPreference.invoke(thisObject, "switch_watermark"), Helper.modRes.getDrawable(R.drawable.ic_layers));
                 setIcon.invoke(findPreference.invoke(thisObject, "switch_subscribe"), Helper.modRes.getDrawable(R.drawable.ic_person_add_alt));
@@ -494,7 +493,6 @@ public class ZhihuPreference implements IHook {
                 setIcon.invoke(switch_autorefresh, Helper.modRes.getDrawable(R.drawable.ic_refresh));
                 setIcon.invoke(switch_findnav, Helper.modRes.getDrawable(R.drawable.ic_quadrilateralstar));
                 setIcon.invoke(preference_sourcecode_clouderhem, Helper.modRes.getDrawable(R.drawable.ic_github));
-                setIcon.invoke(switch_activityinfoad, Helper.modRes.getDrawable(R.drawable.ic_tab));
 
                 if (Helper.prefs.getBoolean("accept_eula", false)) {
                     Object category_eula = findPreference.invoke(thisObject, "category_eula");

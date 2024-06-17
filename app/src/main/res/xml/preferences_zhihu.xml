@@ -57,12 +57,6 @@
             android:key="switch_searchad"
             android:title="去搜索推荐"
             android:summary="去除「大家都在搜」与推广"/>
-        <com.zhihu.android.app.ui.widget.SwitchPreference
-            android:defaultValue="true"
-            android:dependency="switch_mainswitch"
-            android:key="switch_activityinfoad"
-            android:title="去首页顶部广告"
-            android:summary="去首页顶部Tab活动广告"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="其他" android:key="category_misc">
         <com.zhihu.android.app.ui.widget.SwitchPreference
@@ -241,6 +235,11 @@
             android:key="switch_minehybrid"
             android:title="隐藏混合卡片"
             android:summary="隐藏「我的」底部混合卡片"/>
+        <EditTextPreference
+            android:dependency="switch_mainswitch"
+            android:key="edit_tabs"
+            android:title="自定义首页顶部Tab"
+            android:summary="使用 | 隔开，留空为忽略"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="自定义过滤" android:key="category_filter">
         <EditTextPreference
