@@ -4,29 +4,22 @@ import com.shatyuka.zhiliao.Helper
 import de.robv.android.xposed.XC_MethodHook
 import de.robv.android.xposed.XposedBridge.hookMethod
 import de.robv.android.xposed.XposedHelpers
-import java.io.Reader
-import java.lang.reflect.Method
 import java.util.function.Function
 
 class SearchAd : BaseHook() {
 
-    private var processors: MutableMap<Class<*>, Function<Any, Any>> = HashMap()
-
-    private lateinit var readObject: Method
+    private val PROCESSORS: MutableMap<Class<*>, Function<Any, Any>> = HashMap()
 
     override fun getName(): String {
         return "去搜索推荐"
     }
 
     override fun init(classLoader: ClassLoader) {
-
-        readObject = findReadObjectMethod(classLoader)
-
         try {
             val searchTopTabsItemList =
                 classLoader.loadClass("com.zhihu.android.api.model.SearchTopTabsItemList")
 
-            processors.put(searchTopTabsItemList) {
+            PROCESSORS.put(searchTopTabsItemList) {
                 XposedHelpers.setObjectField(it, "commercialData", null)
             }
         } catch (e: Exception) {
@@ -41,7 +34,7 @@ class SearchAd : BaseHook() {
             } catch (ignore: Exception) {
                 searchRecommendQuery.getField("content")
             }
-            processors.put(searchRecommendQuery) {
+            PROCESSORS.put(searchRecommendQuery) {
                 field.set(it, null)
             }
         } catch (e: Exception) {
@@ -51,7 +44,7 @@ class SearchAd : BaseHook() {
         try {
             val presetWords = classLoader.loadClass("com.zhihu.android.api.model.PresetWords")
 
-            processors.put(presetWords) {
+            PROCESSORS.put(presetWords) {
                 XposedHelpers.setObjectField(it, "preset", null)
             }
         } catch (e: Exception) {
@@ -62,7 +55,7 @@ class SearchAd : BaseHook() {
             val presetWords =
                 classLoader.loadClass("com.zhihu.android.service.search_service.model.PresetWords")
 
-            processors.put(presetWords) {
+            PROCESSORS.put(presetWords) {
                 XposedHelpers.setObjectField(it, "preset", null)
             }
         } catch (e: Exception) {
@@ -73,7 +66,7 @@ class SearchAd : BaseHook() {
             val hotSearchBeanClass =
                 classLoader.loadClass("com.zhihu.android.api.model.HotSearchBean")
 
-            processors.put(hotSearchBeanClass) {
+            PROCESSORS.put(hotSearchBeanClass) {
                 XposedHelpers.setObjectField(it, "searchHotList", ArrayList<Any>())
             }
         } catch (e: Exception) {
@@ -88,12 +81,12 @@ class SearchAd : BaseHook() {
             return
         }
 
-        hookMethod(readObject, object : XC_MethodHook() {
+        hookMethod(Helper.JacksonHelper.ObjectReader_readValue, object : XC_MethodHook() {
             override fun afterHookedMethod(param: MethodHookParam) {
                 if (param.result == null) {
                     return
                 }
-                val processor = processors[param.result.javaClass]
+                val processor = PROCESSORS[param.result.javaClass]
                 if (processor != null) {
                     try {
                         processor.apply(param.result)
@@ -104,14 +97,4 @@ class SearchAd : BaseHook() {
             }
         })
     }
-
-    private fun findReadObjectMethod(classloader: ClassLoader): Method {
-        return classloader.loadClass("com.fasterxml.jackson.databind.ObjectReader").declaredMethods
-            .filter {
-                it.parameterCount == 1 && it.parameterTypes[0] == Reader::class.java
-            }.filter {
-                it.returnType == Object::class.java
-            }[0]
-    }
-
 }
