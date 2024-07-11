@@ -32,6 +32,7 @@ import com.shatyuka.zhiliao.hooks.ShareAd;
 import com.shatyuka.zhiliao.hooks.StatusBar;
 import com.shatyuka.zhiliao.hooks.Tag;
 import com.shatyuka.zhiliao.hooks.ThirdPartyLogin;
+import com.shatyuka.zhiliao.hooks.TopstoryBanner;
 import com.shatyuka.zhiliao.hooks.TopTabs;
 import com.shatyuka.zhiliao.hooks.VIPBanner;
 import com.shatyuka.zhiliao.hooks.WebView;
@@ -71,7 +72,8 @@ public class Hooks {
             new AutoRefresh(),
             new PanelBubble(),
             new FullScreen(),
-            new TopTabs()
+            new TopTabs(),
+            new TopstoryBanner(),
     };
 
     public static void init(final ClassLoader classLoader) {
