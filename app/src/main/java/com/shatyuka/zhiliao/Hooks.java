@@ -11,6 +11,7 @@ import com.shatyuka.zhiliao.hooks.CardViewMixShortFilter;
 import com.shatyuka.zhiliao.hooks.Cleaner;
 import com.shatyuka.zhiliao.hooks.ColorMode;
 import com.shatyuka.zhiliao.hooks.CustomFilter;
+import com.shatyuka.zhiliao.hooks.CustomFilterV2;
 import com.shatyuka.zhiliao.hooks.ExternLink;
 import com.shatyuka.zhiliao.hooks.FeedAd;
 import com.shatyuka.zhiliao.hooks.FeedTopHotBanner;
@@ -74,6 +75,7 @@ public class Hooks {
             new FullScreen(),
             new TopTabs(),
             new TopstoryBanner(),
+            new CustomFilterV2()
     };
 
     public static void init(final ClassLoader classLoader) {
