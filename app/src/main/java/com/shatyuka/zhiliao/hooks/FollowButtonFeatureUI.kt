@@ -13,10 +13,8 @@ import java.lang.reflect.Field
 class FollowButtonFeatureUI : BaseHook() {
 
     private lateinit var followWithAvatarView: Class<*>
-    private var bottomReactionViewImpl: Class<*>? = null
     private var followButtonViewImpl: Class<*>? = null
     private lateinit var followPeopleButton: Class<*>
-    private lateinit var followWithAvatarViewFromImplField: Field
     private lateinit var followPeopleButtonField: Field
     private var followModelKt: Class<*>? = null
 
@@ -27,12 +25,8 @@ class FollowButtonFeatureUI : BaseHook() {
     @Throws(Throwable::class)
     override fun init(classLoader: ClassLoader) {
         try {
-            bottomReactionViewImpl =
-                classLoader.loadClass("com.zhihu.android.feature.short_container_feature.ui.widget.impl.BottomReactionViewImpl")
             followWithAvatarView =
                 classLoader.loadClass("com.zhihu.android.unify_interactive.view.follow.FollowWithAvatarView")
-            followWithAvatarViewFromImplField =
-                Helper.findFieldByType(bottomReactionViewImpl, followWithAvatarView)
         } catch (e: Exception) {
             logE(e)
         }
@@ -62,17 +56,6 @@ class FollowButtonFeatureUI : BaseHook() {
             || !Helper.prefs.getBoolean("switch_subscribe", false)
         ) {
             return
-        }
-
-        if (bottomReactionViewImpl != null) {
-            hookAllMethods(bottomReactionViewImpl, "setData", object : XC_MethodHook() {
-                @Throws(IllegalAccessException::class)
-                override fun afterHookedMethod(param: MethodHookParam) {
-                    val followWithAvatarViewInstance =
-                        followWithAvatarViewFromImplField.get(param.thisObject) as FrameLayout
-                    followWithAvatarViewInstance.visibility = View.GONE
-                }
-            })
         }
 
         if (followButtonViewImpl != null) {
