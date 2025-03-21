@@ -190,7 +190,7 @@ class HotListFilter : BaseHook() {
                 val target = XposedHelpers.getObjectField(rankFeedInstance, "target")
                 val titleArea = XposedHelpers.getObjectField(target, "titleArea")
                 val title = XposedHelpers.getObjectField(titleArea, "text") as String
-                if (title.contains("小米")) {
+                if (title.contains("小米") || title.contains("雷军")) {
                     return true
                 }
             } catch (e: Exception) {
