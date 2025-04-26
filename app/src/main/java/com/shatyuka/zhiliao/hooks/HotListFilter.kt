@@ -9,6 +9,7 @@ import de.robv.android.xposed.XposedHelpers
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 import java.util.Arrays
+import java.util.Locale
 import java.util.Optional
 import java.util.regex.Pattern
 import java.util.stream.Collectors
@@ -31,6 +32,10 @@ class HotListFilter : BaseHook() {
 
     private companion object {
         val QUESTION_URL_PATTERN: Pattern = Pattern.compile("zhihu\\.com/question/")
+
+        // 买热搜的钱也算研发资金吗?
+        val SHIT_AD_KEY_LIST =
+            setOf("red mi", "redmi", "xiaomi", "xiao mi", "红米", "小米", "雷军", "su7", "su 7")
     }
 
 
@@ -180,18 +185,19 @@ class HotListFilter : BaseHook() {
     }
 
     private fun isAd(rankFeedInstance: Any): Boolean {
-        return hasXiaomi(rankFeedInstance) || hasZhihuUrl(rankFeedInstance)
+        return isShitAd(rankFeedInstance) || !isZhihuQuestionUrl(rankFeedInstance)
     }
 
-    // 买热搜的钱也算研发资金吗?
-    private fun hasXiaomi(rankFeedInstance: Any): Boolean {
+    private fun isShitAd(rankFeedInstance: Any): Boolean {
         if (rankFeedInstance.javaClass == rankFeed) {
             try {
                 val target = XposedHelpers.getObjectField(rankFeedInstance, "target")
                 val titleArea = XposedHelpers.getObjectField(target, "titleArea")
                 val title = XposedHelpers.getObjectField(titleArea, "text") as String
-                if (title.contains("小米") || title.contains("雷军")) {
-                    return true
+                for (key in SHIT_AD_KEY_LIST) {
+                    if (title.lowercase(Locale.getDefault()).contains(key)) {
+                        return true
+                    }
                 }
             } catch (e: Exception) {
                 logE(e)
@@ -200,7 +206,7 @@ class HotListFilter : BaseHook() {
         return false
     }
 
-    private fun hasZhihuUrl(rankFeedInstance: Any): Boolean {
+    private fun isZhihuQuestionUrl(rankFeedInstance: Any): Boolean {
         if (rankFeedInstance.javaClass == rankFeed) {
             try {
                 val target = XposedHelpers.getObjectField(rankFeedInstance, "target")
@@ -210,11 +216,11 @@ class HotListFilter : BaseHook() {
                         linkAreaInstance, "url"
                     ) as String
                 ).orElse("")
-                return !QUESTION_URL_PATTERN.matcher(url).find()
+                return QUESTION_URL_PATTERN.matcher(url).find()
             } catch (e: Exception) {
                 logE(e)
             }
         }
-        return false
+        return true
     }
 }
