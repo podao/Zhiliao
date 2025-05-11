@@ -8,6 +8,8 @@ import de.robv.android.xposed.XposedHelpers
 
 class CustomFilterV2 : BaseHook() {
 
+    private val adKeys = listOf("商品", "购买", "咨询")
+
     private lateinit var componentCard: Class<*>
     private lateinit var innerDeserializer: Class<*>
 
@@ -122,8 +124,10 @@ class CustomFilterV2 : BaseHook() {
                 || text.contains("收藏")
                 || text.contains("浏览")
             ) {
-                if (text.contains("商品")) {
-                    return true
+                for (adKey in adKeys) {
+                    if (text.contains(adKey)) {
+                        return true
+                    }
                 }
                 continue
             }
