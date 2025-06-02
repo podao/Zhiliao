@@ -10,6 +10,7 @@ import com.shatyuka.zhiliao.hooks.CardViewFeatureShortFilter;
 import com.shatyuka.zhiliao.hooks.CardViewMixShortFilter;
 import com.shatyuka.zhiliao.hooks.Cleaner;
 import com.shatyuka.zhiliao.hooks.ColorMode;
+import com.shatyuka.zhiliao.hooks.CommentAd;
 import com.shatyuka.zhiliao.hooks.ConfigFetcher;
 import com.shatyuka.zhiliao.hooks.CustomFilter;
 import com.shatyuka.zhiliao.hooks.CustomFilterV2;
@@ -27,6 +28,7 @@ import com.shatyuka.zhiliao.hooks.MineHybridView;
 import com.shatyuka.zhiliao.hooks.NavButton;
 import com.shatyuka.zhiliao.hooks.NavRes;
 import com.shatyuka.zhiliao.hooks.NextAnswer;
+import com.shatyuka.zhiliao.hooks.OkhttpHook;
 import com.shatyuka.zhiliao.hooks.PanelBubble;
 import com.shatyuka.zhiliao.hooks.RedDot;
 import com.shatyuka.zhiliao.hooks.SearchAd;
@@ -76,6 +78,9 @@ public class Hooks {
             new TopstoryBanner(),
             new CustomFilterV2(),
             new ConfigFetcher(),
+            new CommentAd(),
+            // make it last
+            OkhttpHook.INSTANCE,
     };
 
     public static void init(final ClassLoader classLoader) {
