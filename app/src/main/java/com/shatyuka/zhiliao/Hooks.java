@@ -24,6 +24,7 @@ import com.shatyuka.zhiliao.hooks.HotBanner;
 import com.shatyuka.zhiliao.hooks.HotListFilter;
 import com.shatyuka.zhiliao.hooks.IHook;
 import com.shatyuka.zhiliao.hooks.LaunchAd;
+import com.shatyuka.zhiliao.hooks.LaunchAdV2;
 import com.shatyuka.zhiliao.hooks.MineHybridView;
 import com.shatyuka.zhiliao.hooks.NavButton;
 import com.shatyuka.zhiliao.hooks.NavRes;
@@ -79,6 +80,7 @@ public class Hooks {
             new CustomFilterV2(),
             new ConfigFetcher(),
             new CommentAd(),
+            new LaunchAdV2(),
             // make it last
             OkhttpHook.INSTANCE,
     };
