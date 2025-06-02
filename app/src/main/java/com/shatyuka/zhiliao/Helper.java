@@ -10,7 +10,6 @@ import android.content.pm.Signature;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
-import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import org.luckypray.dexkit.DexKitBridge;
@@ -38,8 +37,6 @@ import de.robv.android.xposed.XposedBridge;
 
 public class Helper {
     public static Class<?> MorphAdHelper;
-    public static Class<?> IZhihuWebView;
-    public static Class<?> WebViewClientWrapper;
 
     public static Field DataUnique_type;
 
@@ -85,16 +82,6 @@ public class Helper {
 
     public static void init_class(ClassLoader classLoader) throws Exception {
         MorphAdHelper = classLoader.loadClass("com.zhihu.android.morph.ad.utils.MorphAdHelper");
-        try {
-            IZhihuWebView = classLoader.loadClass("com.zhihu.android.app.mercury.api.IZhihuWebView");
-        } catch (ClassNotFoundException ignore) {
-            IZhihuWebView = classLoader.loadClass("com.zhihu.android.app.search.ui.widget.SearchResultLayout").getDeclaredField("c").getType();
-        }
-        WebViewClientWrapper = findClass(classLoader, "com.zhihu.android.app.mercury.web.", 0, 2,
-                (Class<?> clazz) -> clazz.getSuperclass() == WebViewClient.class);
-        if (WebViewClientWrapper == null)
-            throw new ClassNotFoundException("com.zhihu.android.app.mercury.web.WebViewClientWrapper");
-
         DataUnique_type = classLoader.loadClass("com.zhihu.android.api.model.template.DataUnique").getField("type");
     }
 

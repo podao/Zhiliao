@@ -1,10 +1,8 @@
 package com.shatyuka.zhiliao;
 
-import com.shatyuka.zhiliao.hooks.AnswerAd;
 import com.shatyuka.zhiliao.hooks.AnswerListAd;
 import com.shatyuka.zhiliao.hooks.Article;
 import com.shatyuka.zhiliao.hooks.CustomFilter;
-import com.shatyuka.zhiliao.hooks.ExternLink;
 import com.shatyuka.zhiliao.hooks.FeedAd;
 import com.shatyuka.zhiliao.hooks.HotBanner;
 import com.shatyuka.zhiliao.hooks.IHook;
@@ -15,7 +13,6 @@ import com.shatyuka.zhiliao.hooks.NextAnswer;
 import com.shatyuka.zhiliao.hooks.RedDot;
 import com.shatyuka.zhiliao.hooks.SearchAd;
 import com.shatyuka.zhiliao.hooks.ShareAd;
-import com.shatyuka.zhiliao.hooks.Tag;
 import com.shatyuka.zhiliao.hooks.ThirdPartyLogin;
 import com.shatyuka.zhiliao.hooks.VIPBanner;
 import com.shatyuka.zhiliao.hooks.ZhihuPreference;
@@ -101,11 +98,6 @@ public class HookTest {
     }
 
     @Test
-    public void answerAdTest() {
-        checkHook(new AnswerAd());
-    }
-
-    @Test
     public void shareAdTest() {
         checkHook(new ShareAd());
     }
@@ -118,11 +110,6 @@ public class HookTest {
     @Test
     public void redDotTest() {
         checkHook(new RedDot());
-    }
-
-    @Test
-    public void externLinkTest() {
-        checkHook(new ExternLink());
     }
 
     @Test
@@ -143,11 +130,6 @@ public class HookTest {
     @Test
     public void articleTest() {
         checkHook(new Article());
-    }
-
-    @Test
-    public void tagTest() {
-        checkHook(new Tag());
     }
 
     @Test

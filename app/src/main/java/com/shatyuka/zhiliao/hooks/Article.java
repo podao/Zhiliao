@@ -73,7 +73,7 @@ public class Article implements IHook {
     @Override
     public void hook() throws Throwable {
         if (Helper.zhihuPackageInfo.versionCode > 2614) { // after 6.61.0
-            if (Helper.prefs.getBoolean("switch_mainswitch", false) && Helper.prefs.getBoolean("switch_article", false)) {
+            if (Helper.prefs.getBoolean("switch_mainswitch", false)) {
                 XposedBridge.hookMethod(getItemCount, new XC_MethodHook() {
                     @Override
                     protected void beforeHookedMethod(MethodHookParam param) throws Throwable {

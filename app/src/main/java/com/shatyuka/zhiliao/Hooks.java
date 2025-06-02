@@ -2,7 +2,6 @@ package com.shatyuka.zhiliao;
 
 import android.widget.Toast;
 
-import com.shatyuka.zhiliao.hooks.AnswerAd;
 import com.shatyuka.zhiliao.hooks.AnswerListAd;
 import com.shatyuka.zhiliao.hooks.Article;
 import com.shatyuka.zhiliao.hooks.AutoRefresh;
@@ -14,7 +13,6 @@ import com.shatyuka.zhiliao.hooks.CommentAd;
 import com.shatyuka.zhiliao.hooks.ConfigFetcher;
 import com.shatyuka.zhiliao.hooks.CustomFilter;
 import com.shatyuka.zhiliao.hooks.CustomFilterV2;
-import com.shatyuka.zhiliao.hooks.ExternLink;
 import com.shatyuka.zhiliao.hooks.FeedAd;
 import com.shatyuka.zhiliao.hooks.FeedTopHotBanner;
 import com.shatyuka.zhiliao.hooks.FollowButton;
@@ -34,12 +32,10 @@ import com.shatyuka.zhiliao.hooks.PanelBubble;
 import com.shatyuka.zhiliao.hooks.RedDot;
 import com.shatyuka.zhiliao.hooks.SearchAd;
 import com.shatyuka.zhiliao.hooks.ShareAd;
-import com.shatyuka.zhiliao.hooks.Tag;
 import com.shatyuka.zhiliao.hooks.ThirdPartyLogin;
 import com.shatyuka.zhiliao.hooks.TopstoryBanner;
 import com.shatyuka.zhiliao.hooks.TopTabs;
 import com.shatyuka.zhiliao.hooks.VIPBanner;
-import com.shatyuka.zhiliao.hooks.WebView;
 import com.shatyuka.zhiliao.hooks.ZhihuPreference;
 
 public class Hooks {
@@ -49,21 +45,17 @@ public class Hooks {
             new CustomFilter(),
             new FeedAd(),
             new AnswerListAd(),
-            new AnswerAd(),
             new ShareAd(),
             new NextAnswer(),
             new RedDot(),
-            new ExternLink(),
             new VIPBanner(),
             new NavButton(),
             new HotBanner(),
             new ColorMode(),
             new Article(),
-            new Tag(),
             new SearchAd(),
             new ThirdPartyLogin(),
             new NavRes(),
-            new WebView(),
             new Cleaner(),
             new FeedTopHotBanner(),
             new MineHybridView(),

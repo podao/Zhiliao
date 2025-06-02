@@ -17,7 +17,7 @@ class LaunchAd : BaseHook() {
     private var resolveAdvert: Method? = null
 
     private var adClassList: MutableList<Class<*>> = ArrayList()
-    private var adClassNameList = listOf<String>(
+    private var adClassNameList = listOf(
         // https://api.zhihu.com/commercial_api/app_float_layer
         "com.zhihu.android.adbase.model.AdFeedFloat",
         // https://api.zhihu.com/fringe/ad

@@ -8,7 +8,7 @@ class VIPBanner : BaseHook() {
 
     private var moreVipDataList: MutableList<Class<*>> = ArrayList()
 
-    private var moreVipDataClassNameList = listOf<String>(
+    private var moreVipDataClassNameList = listOf(
         "com.zhihu.android.api.MoreVipData",
         "com.zhihu.android.profile.data.model.MoreVipData",
         "com.zhihu.android.app.ui.fragment.more.mine.model.MoreKVipData"

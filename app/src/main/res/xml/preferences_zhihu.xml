@@ -48,12 +48,6 @@
         <com.zhihu.android.app.ui.widget.SwitchPreference
             android:defaultValue="true"
             android:dependency="switch_mainswitch"
-            android:key="switch_answerad"
-            android:title="去回答底部广告"
-            android:summary="去除回答底部广告"/>
-        <com.zhihu.android.app.ui.widget.SwitchPreference
-            android:defaultValue="true"
-            android:dependency="switch_mainswitch"
             android:key="switch_searchad"
             android:title="去搜索推荐"
             android:summary="去除「大家都在搜」与推广"/>
@@ -86,51 +80,9 @@
         <com.zhihu.android.app.ui.widget.SwitchPreference
             android:defaultValue="false"
             android:dependency="switch_mainswitch"
-            android:key="switch_club"
-            android:title="去回答圈子"
-            android:summary="去除回答底部相关圈子"/>
-        <com.zhihu.android.app.ui.widget.SwitchPreference
-            android:defaultValue="false"
-            android:dependency="switch_mainswitch"
-            android:key="switch_goods"
-            android:title="去商品推荐"
-            android:summary="去除回答底部商品推荐"/>
-        <com.zhihu.android.app.ui.widget.SwitchPreference
-            android:defaultValue="false"
-            android:dependency="switch_mainswitch"
-            android:key="switch_related"
-            android:title="去相关搜索"
-            android:summary="去除回答底部相关搜索"/>
-        <com.zhihu.android.app.ui.widget.SwitchPreference
-            android:defaultValue="false"
-            android:dependency="switch_mainswitch"
-            android:key="switch_searchwords"
-            android:title="去关键字搜索"
-            android:summary="去除页内关键字搜索"/>
-        <com.zhihu.android.app.ui.widget.SwitchPreference
-            android:defaultValue="false"
-            android:dependency="switch_mainswitch"
-            android:key="switch_externlink"
-            android:title="直接打开外部链接"
-            android:summary="无需再次确认"/>
-        <com.zhihu.android.app.ui.widget.SwitchPreference
-            android:defaultValue="false"
-            android:dependency="switch_mainswitch"
-            android:key="switch_externlinkex"
-            android:title="直接打开外部链接Ex"
-            android:summary="使用浏览器打开外部链接"/>
-        <com.zhihu.android.app.ui.widget.SwitchPreference
-            android:defaultValue="false"
-            android:dependency="switch_mainswitch"
             android:key="switch_colormode"
             android:title="禁止切换色彩模式"
             android:summary="使用系统当前色彩模式显示大图"/>
-        <com.zhihu.android.app.ui.widget.SwitchPreference
-            android:defaultValue="false"
-            android:dependency="switch_mainswitch"
-            android:key="switch_tag"
-            android:title="显示卡片类别"
-            android:summary="在推荐卡片标题前显示类别标签"/>
         <com.zhihu.android.app.ui.widget.SwitchPreference
             android:defaultValue="false"
             android:dependency="switch_mainswitch"
@@ -202,12 +154,6 @@
         <com.zhihu.android.app.ui.widget.SwitchPreference
             android:defaultValue="false"
             android:dependency="switch_mainswitch"
-            android:key="switch_article"
-            android:title="精简文章页面"
-            android:summary="隐藏相关推荐"/>
-        <com.zhihu.android.app.ui.widget.SwitchPreference
-            android:defaultValue="false"
-            android:dependency="switch_mainswitch"
             android:key="switch_navres"
             android:title="禁用活动主题"
             android:summary="禁止导航栏使用活动主题"/>
@@ -251,31 +197,6 @@
             android:key="edit_content"
             android:title="内容"
             android:summary="支持正则表达式，留空为忽略"/>
-    </PreferenceCategory>
-    <PreferenceCategory android:title="WebView" android:key="category_webview">
-        <com.zhihu.android.app.ui.widget.SwitchPreference
-            android:defaultValue="false"
-            android:dependency="switch_mainswitch"
-            android:key="switch_webview_debug"
-            android:title="开启WebView调试"
-            android:summary="chrome://inspect"/>
-        <com.zhihu.android.app.ui.widget.SwitchPreference
-            android:defaultValue="false"
-            android:dependency="switch_mainswitch"
-            android:key="switch_watermark"
-            android:title="去除背景盲水印"
-            android:summary="禁止开盒"/>
-        <com.zhihu.android.app.ui.widget.SwitchPreference
-            android:defaultValue="false"
-            android:dependency="switch_mainswitch"
-            android:key="switch_subscribe"
-            android:title="去除回答页面关注头像"
-            android:summary="防止误触"/>
-        <EditTextPreference
-            android:dependency="switch_mainswitch"
-            android:key="edit_js"
-            android:title="注入JS脚本"
-            android:summary="注入自定义JS脚本"/>
     </PreferenceCategory>
     <PreferenceCategory android:title="左右划" android:key="category_swap_answers">
         <com.zhihu.android.app.ui.widget.SwitchPreference

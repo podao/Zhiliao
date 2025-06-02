@@ -344,9 +344,6 @@ public class ZhihuPreference extends BaseHook {
                 Object preference_sourcecode = findPreference.invoke(thisObject, "preference_sourcecode");
                 Object preference_donate = findPreference.invoke(thisObject, "preference_donate");
                 Object preference_status = findPreference.invoke(thisObject, "preference_status");
-                Object switch_externlink = findPreference.invoke(thisObject, "switch_externlink");
-                Object switch_externlinkex = findPreference.invoke(thisObject, "switch_externlinkex");
-                Object switch_tag = findPreference.invoke(thisObject, "switch_tag");
                 Object switch_thirdpartylogin = findPreference.invoke(thisObject, "switch_thirdpartylogin");
                 Object switch_reddot = findPreference.invoke(thisObject, "switch_reddot");
                 Object switch_vipbanner = findPreference.invoke(thisObject, "switch_vipbanner");
@@ -354,7 +351,6 @@ public class ZhihuPreference extends BaseHook {
                 Object switch_videonav = findPreference.invoke(thisObject, "switch_videonav");
                 Object switch_friendnav = findPreference.invoke(thisObject, "switch_friendnav");
                 Object switch_panelnav = findPreference.invoke(thisObject, "switch_panelnav");
-                Object switch_article = findPreference.invoke(thisObject, "switch_article");
                 Object switch_navres = findPreference.invoke(thisObject, "switch_navres");
                 Object switch_nipple = findPreference.invoke(thisObject, "switch_nipple");
                 Object switch_nextanswer = findPreference.invoke(thisObject, "switch_nextanswer");
@@ -368,9 +364,6 @@ public class ZhihuPreference extends BaseHook {
                 Object preference_sourcecode_clouderhem = findPreference.invoke(thisObject, "preference_sourcecode_clouderhem");
 
                 setOnPreferenceChangeListener.invoke(findPreference.invoke(thisObject, "accept_eula"), thisObject);
-                setOnPreferenceClickListener.invoke(switch_externlink, thisObject);
-                setOnPreferenceClickListener.invoke(switch_externlinkex, thisObject);
-                setOnPreferenceClickListener.invoke(switch_tag, thisObject);
                 setOnPreferenceClickListener.invoke(switch_thirdpartylogin, thisObject);
                 setOnPreferenceClickListener.invoke(switch_reddot, thisObject);
                 setOnPreferenceClickListener.invoke(switch_vipbanner, thisObject);
@@ -378,7 +371,6 @@ public class ZhihuPreference extends BaseHook {
                 setOnPreferenceClickListener.invoke(switch_videonav, thisObject);
                 setOnPreferenceClickListener.invoke(switch_friendnav, thisObject);
                 setOnPreferenceClickListener.invoke(switch_panelnav, thisObject);
-                setOnPreferenceClickListener.invoke(switch_article, thisObject);
                 setOnPreferenceClickListener.invoke(switch_navres, thisObject);
                 setOnPreferenceClickListener.invoke(switch_nipple, thisObject);
                 setOnPreferenceClickListener.invoke(switch_nextanswer, thisObject);
@@ -417,7 +409,6 @@ public class ZhihuPreference extends BaseHook {
                         Object category_ui = findPreference.invoke(thisObject, "category_ui");
                         Object category_swap_answers = findPreference.invoke(thisObject, "category_swap_answers");
                         Object category_filter = findPreference.invoke(thisObject, "category_filter");
-                        Object category_webview = findPreference.invoke(thisObject, "category_webview");
                         Object category_cleaner = findPreference.invoke(thisObject, "category_cleaner");
                         setVisible.invoke(category_eula, false);
                         setVisible.invoke(category_ads, false);
@@ -425,7 +416,6 @@ public class ZhihuPreference extends BaseHook {
                         setVisible.invoke(category_ui, false);
                         setVisible.invoke(category_swap_answers, false);
                         setVisible.invoke(category_filter, false);
-                        setVisible.invoke(category_webview, false);
                         setVisible.invoke(category_cleaner, false);
                         return null;
                     }
@@ -439,20 +429,12 @@ public class ZhihuPreference extends BaseHook {
                 setIcon.invoke(findPreference.invoke(thisObject, "switch_feedad"), Helper.modRes.getDrawable(R.drawable.ic_table_rows));
                 setIcon.invoke(findPreference.invoke(thisObject, "switch_answerlistad"), Helper.modRes.getDrawable(R.drawable.ic_format_list));
                 setIcon.invoke(findPreference.invoke(thisObject, "switch_sharead"), Helper.modRes.getDrawable(R.drawable.ic_share));
-                setIcon.invoke(findPreference.invoke(thisObject, "switch_answerad"), Helper.modRes.getDrawable(R.drawable.ic_notes));
                 setIcon.invoke(findPreference.invoke(thisObject, "switch_searchad"), Helper.modRes.getDrawable(R.drawable.ic_search));
                 setIcon.invoke(findPreference.invoke(thisObject, "switch_video"), Helper.modRes.getDrawable(R.drawable.ic_play_circle));
                 setIcon.invoke(findPreference.invoke(thisObject, "switch_removearticle"), Helper.modRes.getDrawable(R.drawable.ic_article));
                 setIcon.invoke(findPreference.invoke(thisObject, "switch_pin"), Helper.modRes.getDrawable(R.drawable.ic_emoji_objects));
                 setIcon.invoke(findPreference.invoke(thisObject, "switch_marketcard"), Helper.modRes.getDrawable(R.drawable.ic_vip));
-                setIcon.invoke(findPreference.invoke(thisObject, "switch_club"), Helper.modRes.getDrawable(R.drawable.ic_group));
-                setIcon.invoke(findPreference.invoke(thisObject, "switch_goods"), Helper.modRes.getDrawable(R.drawable.ic_local_mall));
-                setIcon.invoke(findPreference.invoke(thisObject, "switch_related"), Helper.modRes.getDrawable(R.drawable.ic_search_off));
-                setIcon.invoke(findPreference.invoke(thisObject, "switch_searchwords"), Helper.modRes.getDrawable(R.drawable.ic_plagiarism));
-                setIcon.invoke(switch_externlink, Helper.modRes.getDrawable(R.drawable.ic_link));
-                setIcon.invoke(switch_externlinkex, Helper.modRes.getDrawable(R.drawable.ic_link));
                 setIcon.invoke(findPreference.invoke(thisObject, "switch_colormode"), Helper.modRes.getDrawable(R.drawable.ic_color));
-                setIcon.invoke(switch_tag, Helper.modRes.getDrawable(R.drawable.ic_label));
                 setIcon.invoke(switch_fullscreen, Helper.modRes.getDrawable(R.drawable.ic_fullscreen_exit));
                 setIcon.invoke(switch_thirdpartylogin, Helper.modRes.getDrawable(R.drawable.ic_login));
                 setIcon.invoke(switch_reddot, Helper.modRes.getDrawable(R.drawable.ic_mark_chat_unread));
@@ -462,7 +444,6 @@ public class ZhihuPreference extends BaseHook {
                 setIcon.invoke(switch_friendnav, Helper.modRes.getDrawable(R.drawable.ic_person_add_alt));
                 setIcon.invoke(switch_panelnav, Helper.modRes.getDrawable(R.drawable.ic_add_circle));
                 setIcon.invoke(findPreference.invoke(thisObject, "switch_hotbanner"), Helper.modRes.getDrawable(R.drawable.ic_whatshot));
-                setIcon.invoke(switch_article, Helper.modRes.getDrawable(R.drawable.ic_article));
                 setIcon.invoke(switch_navres, Helper.modRes.getDrawable(R.drawable.ic_event));
                 setIcon.invoke(switch_nipple, Helper.modRes.getDrawable(R.drawable.ic_do_disturb_on));
                 setIcon.invoke(switch_nextanswer, Helper.modRes.getDrawable(R.drawable.ic_circle_down));
@@ -470,10 +451,6 @@ public class ZhihuPreference extends BaseHook {
                 setIcon.invoke(findPreference.invoke(thisObject, "edit_author"), Helper.regex_author != null ? Helper.modRes.getDrawable(R.drawable.ic_check) : Helper.modRes.getDrawable(R.drawable.ic_close));
                 setIcon.invoke(findPreference.invoke(thisObject, "edit_content"), Helper.regex_content != null ? Helper.modRes.getDrawable(R.drawable.ic_check) : Helper.modRes.getDrawable(R.drawable.ic_close));
                 setIcon.invoke(findPreference.invoke(thisObject, "edit_tabs"), Helper.modRes.getDrawable(R.drawable.ic_tab));
-                setIcon.invoke(findPreference.invoke(thisObject, "switch_webview_debug"), Helper.modRes.getDrawable(R.drawable.ic_code));
-                setIcon.invoke(findPreference.invoke(thisObject, "switch_watermark"), Helper.modRes.getDrawable(R.drawable.ic_layers));
-                setIcon.invoke(findPreference.invoke(thisObject, "switch_subscribe"), Helper.modRes.getDrawable(R.drawable.ic_person_add_alt));
-                setIcon.invoke(findPreference.invoke(thisObject, "edit_js"), Helper.modRes.getDrawable(R.drawable.ic_javascript));
                 setIcon.invoke(preference_clean, Helper.modRes.getDrawable(R.drawable.ic_delete));
                 setIcon.invoke(switch_autoclean, Helper.modRes.getDrawable(R.drawable.ic_auto_delete));
                 setIcon.invoke(findPreference.invoke(thisObject, "switch_silenceclean"), Helper.modRes.getDrawable(R.drawable.ic_notifications_off));
@@ -550,14 +527,6 @@ public class ZhihuPreference extends BaseHook {
                         Intent intent_donate = new Intent(Intent.ACTION_VIEW, uri_donate);
                         ((Context) getContext.invoke(param.thisObject)).startActivity(intent_donate);
                         break;
-                    case "switch_externlink":
-                        Object switch_externlinkex = findPreference.invoke(param.thisObject, "switch_externlinkex");
-                        setChecked.invoke(switch_externlinkex, false);
-                        break;
-                    case "switch_externlinkex":
-                        Object switch_externlink = findPreference.invoke(param.thisObject, "switch_externlink");
-                        setChecked.invoke(switch_externlink, false);
-                        break;
                     case "preference_clean":
                         String size = Cleaner.humanReadableByteCount(Cleaner.doClean());
                         if (!Helper.prefs.getBoolean("switch_silenceclean", false)) {
@@ -567,7 +536,6 @@ public class ZhihuPreference extends BaseHook {
                         break;
                     case "switch_navres":
                         Helper.deleteDirectory(Helper.context.getFilesDir() + "/bottom_nav");
-                    case "switch_tag":
                     case "switch_thirdpartylogin":
                     case "switch_reddot":
                     case "switch_vipbanner":
@@ -575,7 +543,6 @@ public class ZhihuPreference extends BaseHook {
                     case "switch_videonav":
                     case "switch_friendnav":
                     case "switch_panelnav":
-                    case "switch_article":
                     case "switch_nextanswer":
                     case "switch_nipple":
                     case "switch_autoclean":

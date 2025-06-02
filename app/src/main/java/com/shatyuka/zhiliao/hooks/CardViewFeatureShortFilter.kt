@@ -145,7 +145,8 @@ class CardViewFeatureShortFilter : BaseHook() {
          */
         @Throws(InvocationTargetException::class, IllegalAccessException::class)
         private fun hasMoreType(shortContentJsonNode: Any): Boolean {
-            val bizTypeList = JacksonHelper.JsonNode_get.invoke(shortContentJsonNode, "biz_type_list")
+            val bizTypeList =
+                JacksonHelper.JsonNode_get.invoke(shortContentJsonNode, "biz_type_list")
             return JacksonHelper.JsonNode_size.invoke(bizTypeList) as Int > 1
         }
 
@@ -165,20 +166,19 @@ class CardViewFeatureShortFilter : BaseHook() {
             } catch (e: Exception) {
                 logE(e)
             }
-            if (Helper.prefs.getBoolean("switch_related", false)) {
-                try {
-                    val thirdBusiness =
-                        JacksonHelper.JsonNode_get.invoke(shortContentJsonNode, "third_business")
-                    if (thirdBusiness != null) {
-                        val relatedQueries =
-                            JacksonHelper.JsonNode_get.invoke(thirdBusiness, "related_queries")
-                        if (relatedQueries != null) {
-                            JacksonHelper.ObjectNode_put.invoke(relatedQueries, "queries", null)
-                        }
+
+            try {
+                val thirdBusiness =
+                    JacksonHelper.JsonNode_get.invoke(shortContentJsonNode, "third_business")
+                if (thirdBusiness != null) {
+                    val relatedQueries =
+                        JacksonHelper.JsonNode_get.invoke(thirdBusiness, "related_queries")
+                    if (relatedQueries != null) {
+                        JacksonHelper.ObjectNode_put.invoke(relatedQueries, "queries", null)
                     }
-                } catch (e: Exception) {
-                    logE(e)
                 }
+            } catch (e: Exception) {
+                logE(e)
             }
         }
 
